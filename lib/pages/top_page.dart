@@ -74,7 +74,15 @@ class TopPage extends StatelessWidget {
                                 battleNumber: BattleNumber.twoPlayers)));
                   }),
               const SizedBox(height: 60),
-              Button(buttonText: AppText.manyPlayersBattle, onTap: () {}),
+              Button(
+                  buttonText: AppText.manyPlayersBattle,
+                  onTap: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (_) => const GameSettingPage(
+                                battleNumber: BattleNumber.manyPlayers)));
+                  }),
               const SizedBox(height: 61),
             ],
           )
