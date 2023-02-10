@@ -5,6 +5,7 @@ import 'package:shogi_game/constraints/app_text.dart';
 import 'package:shogi_game/constraints/image_path.dart';
 import 'package:shogi_game/pages/top_page.dart';
 import 'package:shogi_game/ui_component/button.dart';
+import 'package:shogi_game/ui_component/input_name.dart';
 
 class GameSettingPage extends StatefulWidget {
   final BattleNumber battleNumber;
@@ -19,6 +20,8 @@ class GameSettingPage extends StatefulWidget {
 class _GameSettingPage extends State<GameSettingPage> {
   bool switchValue = true;
   final TextEditingController _controller = TextEditingController();
+  final TextEditingController _controller2 = TextEditingController();
+  final TextEditingController _controller3 = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -54,6 +57,9 @@ class _GameSettingPage extends State<GameSettingPage> {
               if (widget.battleNumber == BattleNumber.onePlayer) ...{
                 onePlayer(),
               },
+              if (widget.battleNumber == BattleNumber.twoPlayers) ...{
+                twoPlayers(),
+              },
               Expanded(flex: calcFlex3(), child: Container()),
               Button(buttonText: AppText.startGame, onTap: () {}),
               const SizedBox(height: 102),
@@ -61,6 +67,76 @@ class _GameSettingPage extends State<GameSettingPage> {
           )
         ],
       ),
+    );
+  }
+
+  Widget twoPlayers() {
+    return Container(
+      height: 377,
+      width: MediaQuery.of(context).size.width - 48,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(25),
+        color: AppColor.white,
+      ),
+      child: Padding(
+        padding: const EdgeInsets.only(
+          top: 17,
+          left: 20,
+          right: 15,
+          bottom: 21,
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            firstMoveOrSecondMoveText(AppText.firstMove),
+            const SizedBox(height: 6),
+            InputName(controller: _controller3),
+            const SizedBox(height: 28),
+            firstMoveOrSecondMoveText("後手"),
+            const SizedBox(height: 6),
+            InputName(controller: _controller2),
+            const SizedBox(height: 45),
+            adjust("持ち時間"),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget firstMoveOrSecondMoveText(String text) {
+    return Text(
+      text,
+      style: const TextStyle(
+        fontSize: 40,
+        fontWeight: FontWeight.w700,
+        color: AppColor.textColorBlack,
+      ),
+    );
+  }
+
+  Widget adjust(String text) {
+    return Row(
+      children: [
+        Expanded(
+          child: Text(
+            text,
+            style: const TextStyle(
+              fontSize: 25,
+              fontWeight: FontWeight.w400,
+              color: AppColor.textColorBlack,
+            ),
+          ),
+        ),
+        const Text(
+          "10分",
+          style: TextStyle(
+            fontSize: 25,
+            fontWeight: FontWeight.w400,
+            color: AppColor.textColorBlack,
+          ),
+        ),
+        const SizedBox(width: 32),
+      ],
     );
   }
 
@@ -109,26 +185,7 @@ class _GameSettingPage extends State<GameSettingPage> {
               ),
             ),
             const SizedBox(height: 20),
-            Row(
-              children: [
-                const Expanded(
-                  child: Text(
-                    AppText.name,
-                    style: TextStyle(
-                      fontSize: 25,
-                      fontWeight: FontWeight.w400,
-                      color: AppColor.textColorBlack,
-                    ),
-                  ),
-                ),
-                SizedBox(
-                  width: 170,
-                  child: TextField(
-                    controller: _controller,
-                  ),
-                )
-              ],
-            )
+            InputName(controller: _controller),
           ],
         ),
       ),
