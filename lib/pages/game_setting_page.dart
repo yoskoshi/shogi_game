@@ -60,12 +60,45 @@ class _GameSettingPage extends State<GameSettingPage> {
               if (widget.battleNumber == BattleNumber.twoPlayers) ...{
                 twoPlayers(),
               },
+              if (widget.battleNumber == BattleNumber.manyPlayers) ...{
+                manyPlayers(),
+              },
               Expanded(flex: calcFlex3(), child: Container()),
-              Button(buttonText: AppText.startGame, onTap: () {}),
+              Button(
+                  buttonText: widget.battleNumber == BattleNumber.manyPlayers
+                      ? AppText.inputName
+                      : AppText.startGame,
+                  onTap: () {}),
               const SizedBox(height: 102),
             ],
           )
         ],
+      ),
+    );
+  }
+
+  Widget manyPlayers() {
+    return Container(
+      height: 156,
+      width: MediaQuery.of(context).size.width - 48,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(25),
+        color: AppColor.white,
+      ),
+      child: Padding(
+        padding: const EdgeInsets.only(
+          top: 16,
+          bottom: 26,
+          left: 20,
+          right: 30,
+        ),
+        child: Column(
+          children: [
+            adjust(AppText.numberOfPeople, AppText.tenPeople),
+            const SizedBox(height: 38),
+            adjust(AppText.allottedTime, AppText.tenMinutes),
+          ],
+        ),
       ),
     );
   }
@@ -92,11 +125,11 @@ class _GameSettingPage extends State<GameSettingPage> {
             const SizedBox(height: 6),
             InputName(controller: _controller3),
             const SizedBox(height: 28),
-            firstMoveOrSecondMoveText("後手"),
+            firstMoveOrSecondMoveText(AppText.secondMove),
             const SizedBox(height: 6),
             InputName(controller: _controller2),
             const SizedBox(height: 45),
-            adjust("持ち時間"),
+            adjust(AppText.allottedTime, AppText.tenMinutes),
           ],
         ),
       ),
@@ -114,7 +147,7 @@ class _GameSettingPage extends State<GameSettingPage> {
     );
   }
 
-  Widget adjust(String text) {
+  Widget adjust(String text, String numberText) {
     return Row(
       children: [
         Expanded(
@@ -127,9 +160,9 @@ class _GameSettingPage extends State<GameSettingPage> {
             ),
           ),
         ),
-        const Text(
-          "10分",
-          style: TextStyle(
+        Text(
+          numberText,
+          style: const TextStyle(
             fontSize: 25,
             fontWeight: FontWeight.w400,
             color: AppColor.textColorBlack,
