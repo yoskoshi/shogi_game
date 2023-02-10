@@ -2,8 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:shogi_game/constraints/app_color.dart';
 import 'package:shogi_game/constraints/app_text.dart';
-import 'package:shogi_game/constraints/image_path.dart';
 import 'package:shogi_game/pages/top_page.dart';
+import 'package:shogi_game/ui_component/background_image.dart';
 import 'package:shogi_game/ui_component/button.dart';
 import 'package:shogi_game/ui_component/input_name.dart';
 
@@ -27,20 +27,7 @@ class _GameSettingPage extends State<GameSettingPage> {
     return Scaffold(
       body: Stack(
         children: [
-          Container(
-            height: double.infinity,
-            width: double.infinity,
-            decoration: const BoxDecoration(
-              image: DecorationImage(
-                colorFilter: ColorFilter.mode(
-                  AppColor.luminosityColor,
-                  BlendMode.luminosity,
-                ),
-                image: AssetImage(ImagePath.backgroundImagePath),
-                fit: BoxFit.cover,
-              ),
-            ),
-          ),
+          const BackgroundImage(),
           Column(
             children: [
               Expanded(flex: calcFlex1(), child: Container()),
