@@ -2,7 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:shogi_game/constraints/app_color.dart';
 import 'package:shogi_game/constraints/app_text.dart';
 import 'package:shogi_game/constraints/image_path.dart';
+import 'package:shogi_game/pages/game_setting_page.dart';
 import 'package:shogi_game/ui_component/button.dart';
+
+enum BattleNumber {
+  onePlayer,
+  twoPlayers,
+  manyPlayers,
+}
 
 class TopPage extends StatelessWidget {
   const TopPage({Key? key}) : super(key: key);
@@ -33,7 +40,7 @@ class TopPage extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 30,
                   fontWeight: FontWeight.w400,
-                  color: AppColor.textColorWhite,
+                  color: AppColor.white,
                   fontFamily: AppText.moul,
                 ),
               ),
@@ -43,11 +50,19 @@ class TopPage extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.w700,
-                  color: AppColor.textColorWhite,
+                  color: AppColor.white,
                 ),
               ),
               Expanded(flex: 29, child: Container()),
-              Button(buttonText: AppText.onePlayerBattle, onTap: () {}),
+              Button(
+                  buttonText: AppText.onePlayerBattle,
+                  onTap: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (_) => const GameSettingPage(
+                                battleNumber: BattleNumber.onePlayer)));
+                  }),
               const SizedBox(height: 60),
               Button(buttonText: AppText.twoPlayersBattle, onTap: () {}),
               const SizedBox(height: 60),
