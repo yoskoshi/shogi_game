@@ -1,23 +1,26 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shogi_game/constraints/app_color.dart';
 import 'package:shogi_game/constraints/app_text.dart';
+import 'package:shogi_game/pages/game_page.dart';
 import 'package:shogi_game/pages/top_page.dart';
+import 'package:shogi_game/providers/one_player_game_setting_notifier.dart';
 import 'package:shogi_game/ui_component/background_image.dart';
 import 'package:shogi_game/ui_component/button.dart';
 import 'package:shogi_game/ui_component/input_name.dart';
 
-class GameSettingPage extends StatefulWidget {
+class GameSettingPage extends ConsumerStatefulWidget {
   final BattleNumber battleNumber;
 
   const GameSettingPage({Key? key, required this.battleNumber})
       : super(key: key);
 
   @override
-  State<GameSettingPage> createState() => _GameSettingPage();
+  ConsumerState<GameSettingPage> createState() => _GameSettingPage();
 }
 
-class _GameSettingPage extends State<GameSettingPage> {
+class _GameSettingPage extends ConsumerState<GameSettingPage> {
   bool switchValue = true;
   final TextEditingController _controller = TextEditingController();
   final TextEditingController _controller2 = TextEditingController();
@@ -55,7 +58,10 @@ class _GameSettingPage extends State<GameSettingPage> {
                   buttonText: widget.battleNumber == BattleNumber.manyPlayers
                       ? AppText.inputName
                       : AppText.startGame,
-                  onTap: () {}),
+                  onTap: () {
+                    Navigator.of(context).pushReplacement(
+                        MaterialPageRoute(builder: (_) => const GamePage()));
+                  }),
               const SizedBox(height: 102),
             ],
           )
@@ -189,9 +195,13 @@ class _GameSettingPage extends State<GameSettingPage> {
                 CupertinoSwitch(
                     value: switchValue,
                     onChanged: (value) {
+                      final onePlayerGameSettingNotifier =
+                          ref.read(onePlayerGameSettingProvider.notifier);
                       setState(() {
                         switchValue = value;
                       });
+                      onePlayerGameSettingNotifier
+                          .updateFirstMoveOrSecondMove(switchValue);
                     }),
               ],
             ),
