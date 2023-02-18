@@ -2,11 +2,20 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shogi_game/constraints/app_color.dart';
 import 'package:shogi_game/constraints/app_text.dart';
+import 'package:shogi_game/pages/top_page.dart';
 import 'package:shogi_game/providers/one_player_game_setting_notifier.dart';
+import 'package:shogi_game/providers/two_player_game_setting_notifier.dart';
 
 class InputName extends ConsumerWidget {
   final TextEditingController controller;
-  const InputName({Key? key, required this.controller}) : super(key: key);
+  final bool? isFirstMove;
+  final BattleNumber battleNumber;
+  const InputName(
+      {Key? key,
+      required this.controller,
+      this.isFirstMove,
+      required this.battleNumber})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -27,9 +36,23 @@ class InputName extends ConsumerWidget {
           child: TextField(
             controller: controller,
             onSubmitted: (value) {
-              final onePlayerGameSettingNotifier =
-                  ref.read(onePlayerGameSettingProvider.notifier);
-              onePlayerGameSettingNotifier.updateName(controller.text);
+              if (battleNumber == BattleNumber.onePlayer) {
+                final onePlayerGameSettingNotifier =
+                    ref.read(onePlayerGameSettingProvider.notifier);
+                onePlayerGameSettingNotifier.updateName(controller.text);
+              } else if (battleNumber == BattleNumber.twoPlayers) {
+                if (isFirstMove!) {
+                  final twoPlayersGameSettingNotifier =
+                      ref.read(twoPlayersGameSettingProvider.notifier);
+                  twoPlayersGameSettingNotifier
+                      .updateFirstMoveName(controller.text);
+                } else {
+                  final twoPlayersGameSettingNotifier =
+                      ref.read(twoPlayersGameSettingProvider.notifier);
+                  twoPlayersGameSettingNotifier
+                      .updateSecondMoveName(controller.text);
+                }
+              }
             },
           ),
         ),
