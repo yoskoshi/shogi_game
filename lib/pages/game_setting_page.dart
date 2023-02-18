@@ -6,6 +6,7 @@ import 'package:shogi_game/constraints/app_text.dart';
 import 'package:shogi_game/pages/game_page.dart';
 import 'package:shogi_game/pages/top_page.dart';
 import 'package:shogi_game/providers/one_player_game_setting_notifier.dart';
+import 'package:shogi_game/providers/two_player_game_setting_notifier.dart';
 import 'package:shogi_game/ui_component/background_image.dart';
 import 'package:shogi_game/ui_component/button.dart';
 import 'package:shogi_game/ui_component/input_name.dart';
@@ -25,6 +26,16 @@ class _GameSettingPage extends ConsumerState<GameSettingPage> {
   final TextEditingController _controller = TextEditingController();
   final TextEditingController _controller2 = TextEditingController();
   final TextEditingController _controller3 = TextEditingController();
+  final List<DropdownMenuItem<String>> _items = [];
+  String _selectItem = " ";
+
+  @override
+  void initState() {
+    super.initState();
+    setItems();
+    _selectItem = _items[0].value!;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -45,10 +56,10 @@ class _GameSettingPage extends ConsumerState<GameSettingPage> {
               ),
               Expanded(flex: calcFlex2(), child: Container()),
               if (widget.battleNumber == BattleNumber.onePlayer) ...{
-                onePlayer(),
+                onePlayer(widget.battleNumber),
               },
               if (widget.battleNumber == BattleNumber.twoPlayers) ...{
-                twoPlayers(),
+                twoPlayers(widget.battleNumber),
               },
               if (widget.battleNumber == BattleNumber.manyPlayers) ...{
                 manyPlayers(),
@@ -96,9 +107,9 @@ class _GameSettingPage extends ConsumerState<GameSettingPage> {
     );
   }
 
-  Widget twoPlayers() {
+  Widget twoPlayers(BattleNumber battleNumber) {
     return Container(
-      height: 377,
+      height: 387,
       width: MediaQuery.of(context).size.width - 48,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(25),
@@ -116,11 +127,17 @@ class _GameSettingPage extends ConsumerState<GameSettingPage> {
           children: [
             firstMoveOrSecondMoveText(AppText.firstMove),
             const SizedBox(height: 6),
-            InputName(controller: _controller3),
+            InputName(
+                controller: _controller3,
+                isFirstMove: true,
+                battleNumber: battleNumber),
             const SizedBox(height: 28),
             firstMoveOrSecondMoveText(AppText.secondMove),
             const SizedBox(height: 6),
-            InputName(controller: _controller2),
+            InputName(
+                controller: _controller2,
+                isFirstMove: false,
+                battleNumber: battleNumber),
             const SizedBox(height: 45),
             adjust(AppText.allottedTime, AppText.tenMinutes),
           ],
@@ -141,6 +158,8 @@ class _GameSettingPage extends ConsumerState<GameSettingPage> {
   }
 
   Widget adjust(String text, String numberText) {
+    final twoPlayersGameSettingNotifier =
+        ref.read(twoPlayersGameSettingProvider.notifier);
     return Row(
       children: [
         Expanded(
@@ -153,20 +172,22 @@ class _GameSettingPage extends ConsumerState<GameSettingPage> {
             ),
           ),
         ),
-        Text(
-          numberText,
-          style: const TextStyle(
-            fontSize: 25,
-            fontWeight: FontWeight.w400,
-            color: AppColor.textColorBlack,
-          ),
+        DropdownButton(
+          items: _items,
+          value: _selectItem,
+          onChanged: (value) {
+            setState(() {
+              _selectItem = value!;
+            });
+            twoPlayersGameSettingNotifier.updateWaitName(_selectItem);
+          },
         ),
         const SizedBox(width: 32),
       ],
     );
   }
 
-  Widget onePlayer() {
+  Widget onePlayer(BattleNumber battleNumber) {
     return Container(
       height: 182,
       width: MediaQuery.of(context).size.width - 48,
@@ -215,7 +236,7 @@ class _GameSettingPage extends ConsumerState<GameSettingPage> {
               ),
             ),
             const SizedBox(height: 20),
-            InputName(controller: _controller),
+            InputName(controller: _controller, battleNumber: battleNumber),
           ],
         ),
       ),
@@ -248,5 +269,66 @@ class _GameSettingPage extends ConsumerState<GameSettingPage> {
     } else {
       return 12;
     }
+  }
+
+  void setItems() {
+    _items
+      ..add(
+        const DropdownMenuItem(
+          value: "10分",
+          child: Text(
+            "10分",
+            style: TextStyle(
+              fontSize: 25,
+              fontWeight: FontWeight.w400,
+              color: AppColor.textColorBlack,
+            ),
+          ),
+        ),
+      )
+      ..add(const DropdownMenuItem(
+        value: "30分",
+        child: Text(
+          "30分",
+          style: TextStyle(
+            fontSize: 25,
+            fontWeight: FontWeight.w400,
+            color: AppColor.textColorBlack,
+          ),
+        ),
+      ))
+      ..add(const DropdownMenuItem(
+        value: "1時間",
+        child: Text(
+          "1時間",
+          style: TextStyle(
+            fontSize: 25,
+            fontWeight: FontWeight.w400,
+            color: AppColor.textColorBlack,
+          ),
+        ),
+      ))
+      ..add(const DropdownMenuItem(
+        value: "2時間",
+        child: Text(
+          "2時間",
+          style: TextStyle(
+            fontSize: 25,
+            fontWeight: FontWeight.w400,
+            color: AppColor.textColorBlack,
+          ),
+        ),
+      ))
+      ..add(const DropdownMenuItem(
+        value: "4時間",
+        child: Text(
+          "4時間",
+          style: TextStyle(
+            fontSize: 25,
+            fontWeight: FontWeight.w400,
+            color: AppColor.textColorBlack,
+          ),
+        ),
+      ));
   }
 }
