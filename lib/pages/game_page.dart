@@ -5,9 +5,12 @@ class GamePage extends ConsumerWidget {
   const GamePage({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return const Scaffold(
-      body: Center(
-        child: Text("GamePage"),
+    return WillPopScope(
+      onWillPop: () async => false,
+      child: const Scaffold(
+        body: Center(
+          child: Text("GamePage"),
+        ),
       ),
     );
   }
