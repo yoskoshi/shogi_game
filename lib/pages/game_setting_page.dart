@@ -1,27 +1,51 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shogi_game/constraints/app_color.dart';
 import 'package:shogi_game/constraints/app_text.dart';
+import 'package:shogi_game/pages/game_page.dart';
+import 'package:shogi_game/pages/many_players_name_setting_page.dart';
 import 'package:shogi_game/pages/top_page.dart';
+import 'package:shogi_game/providers/many_players_game_setting_notifier.dart';
+import 'package:shogi_game/providers/one_player_game_setting_notifier.dart';
+import 'package:shogi_game/providers/two_player_game_setting_notifier.dart';
 import 'package:shogi_game/ui_component/background_image.dart';
 import 'package:shogi_game/ui_component/button.dart';
 import 'package:shogi_game/ui_component/input_name.dart';
 
-class GameSettingPage extends StatefulWidget {
+class GameSettingPage extends ConsumerStatefulWidget {
   final BattleNumber battleNumber;
 
   const GameSettingPage({Key? key, required this.battleNumber})
       : super(key: key);
 
   @override
-  State<GameSettingPage> createState() => _GameSettingPage();
+  ConsumerState<GameSettingPage> createState() => _GameSettingPage();
 }
 
-class _GameSettingPage extends State<GameSettingPage> {
+class _GameSettingPage extends ConsumerState<GameSettingPage> {
   bool switchValue = true;
   final TextEditingController _controller = TextEditingController();
   final TextEditingController _controller2 = TextEditingController();
   final TextEditingController _controller3 = TextEditingController();
+  final List<DropdownMenuItem<String>> _twoPlayersWaitTimeItems = [];
+  final List<DropdownMenuItem<String>> _manyPlayersNumberOfPeopleItems = [];
+  final List<DropdownMenuItem<String>> _manyPlayersWaitTimeItems = [];
+  String _twoPlayersSelectItem = " ";
+  String _manyPlayersNumberOfPeople = " ";
+  String _manyPlayersWaitTime = " ";
+
+  @override
+  void initState() {
+    super.initState();
+    setWaitTimeItems(_twoPlayersWaitTimeItems);
+    setWaitTimeItems(_manyPlayersWaitTimeItems);
+    setNumberOfPeopleItems();
+    _twoPlayersSelectItem = _twoPlayersWaitTimeItems[0].value!;
+    _manyPlayersNumberOfPeople = _manyPlayersNumberOfPeopleItems[0].value!;
+    _manyPlayersWaitTime = _manyPlayersWaitTimeItems[0].value!;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -42,10 +66,10 @@ class _GameSettingPage extends State<GameSettingPage> {
               ),
               Expanded(flex: calcFlex2(), child: Container()),
               if (widget.battleNumber == BattleNumber.onePlayer) ...{
-                onePlayer(),
+                onePlayer(widget.battleNumber),
               },
               if (widget.battleNumber == BattleNumber.twoPlayers) ...{
-                twoPlayers(),
+                twoPlayers(widget.battleNumber),
               },
               if (widget.battleNumber == BattleNumber.manyPlayers) ...{
                 manyPlayers(),
@@ -55,7 +79,18 @@ class _GameSettingPage extends State<GameSettingPage> {
                   buttonText: widget.battleNumber == BattleNumber.manyPlayers
                       ? AppText.inputName
                       : AppText.startGame,
-                  onTap: () {}),
+                  onTap: () {
+                    if (widget.battleNumber == BattleNumber.manyPlayers) {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (_) =>
+                                  const ManyPlayersNameSettingPage()));
+                    } else {
+                      Navigator.of(context).pushReplacement(
+                          MaterialPageRoute(builder: (_) => const GamePage()));
+                    }
+                  }),
               const SizedBox(height: 102),
             ],
           )
@@ -65,8 +100,10 @@ class _GameSettingPage extends State<GameSettingPage> {
   }
 
   Widget manyPlayers() {
+    final manyPlayersGameSettingNotifier =
+        ref.read(manyPlayersGameSettingProvider.notifier);
     return Container(
-      height: 156,
+      height: 176,
       width: MediaQuery.of(context).size.width - 48,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(25),
@@ -81,18 +118,44 @@ class _GameSettingPage extends State<GameSettingPage> {
         ),
         child: Column(
           children: [
-            adjust(AppText.numberOfPeople, AppText.tenPeople),
+            adjust(
+              text: AppText.numberOfPeople,
+              numberText: AppText.threePeople,
+              items: _manyPlayersNumberOfPeopleItems,
+              selectedItem: _manyPlayersNumberOfPeople,
+              onChanged: (value) {
+                setState(() {
+                  _manyPlayersNumberOfPeople = value!;
+                });
+                manyPlayersGameSettingNotifier
+                    .updateNumberOfPeople(_manyPlayersNumberOfPeople);
+              },
+            ),
             const SizedBox(height: 38),
-            adjust(AppText.allottedTime, AppText.tenMinutes),
+            adjust(
+              text: AppText.allottedTime,
+              numberText: AppText.tenMinutes,
+              items: _manyPlayersWaitTimeItems,
+              selectedItem: _manyPlayersWaitTime,
+              onChanged: (value) {
+                setState(() {
+                  _manyPlayersWaitTime = value!;
+                });
+                manyPlayersGameSettingNotifier
+                    .updateWaitTime(_manyPlayersWaitTime);
+              },
+            ),
           ],
         ),
       ),
     );
   }
 
-  Widget twoPlayers() {
+  Widget twoPlayers(BattleNumber battleNumber) {
+    final twoPlayersGameSettingNotifier =
+        ref.read(twoPlayersGameSettingProvider.notifier);
     return Container(
-      height: 377,
+      height: 387,
       width: MediaQuery.of(context).size.width - 48,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(25),
@@ -110,13 +173,30 @@ class _GameSettingPage extends State<GameSettingPage> {
           children: [
             firstMoveOrSecondMoveText(AppText.firstMove),
             const SizedBox(height: 6),
-            InputName(controller: _controller3),
+            InputName(
+                controller: _controller3,
+                isFirstMove: true,
+                battleNumber: battleNumber),
             const SizedBox(height: 28),
             firstMoveOrSecondMoveText(AppText.secondMove),
             const SizedBox(height: 6),
-            InputName(controller: _controller2),
+            InputName(
+                controller: _controller2,
+                isFirstMove: false,
+                battleNumber: battleNumber),
             const SizedBox(height: 45),
-            adjust(AppText.allottedTime, AppText.tenMinutes),
+            adjust(
+                text: AppText.allottedTime,
+                numberText: AppText.tenMinutes,
+                items: _twoPlayersWaitTimeItems,
+                selectedItem: _twoPlayersSelectItem,
+                onChanged: (value) {
+                  setState(() {
+                    _twoPlayersSelectItem = value!;
+                  });
+                  twoPlayersGameSettingNotifier
+                      .updateWaitName(_twoPlayersSelectItem);
+                }),
           ],
         ),
       ),
@@ -134,7 +214,12 @@ class _GameSettingPage extends State<GameSettingPage> {
     );
   }
 
-  Widget adjust(String text, String numberText) {
+  Widget adjust(
+      {required String text,
+      required String numberText,
+      required List<DropdownMenuItem<String>> items,
+      required String selectedItem,
+      required void Function(String?) onChanged}) {
     return Row(
       children: [
         Expanded(
@@ -147,20 +232,17 @@ class _GameSettingPage extends State<GameSettingPage> {
             ),
           ),
         ),
-        Text(
-          numberText,
-          style: const TextStyle(
-            fontSize: 25,
-            fontWeight: FontWeight.w400,
-            color: AppColor.textColorBlack,
-          ),
+        DropdownButton(
+          items: items,
+          value: selectedItem,
+          onChanged: onChanged,
         ),
         const SizedBox(width: 32),
       ],
     );
   }
 
-  Widget onePlayer() {
+  Widget onePlayer(BattleNumber battleNumber) {
     return Container(
       height: 182,
       width: MediaQuery.of(context).size.width - 48,
@@ -189,9 +271,13 @@ class _GameSettingPage extends State<GameSettingPage> {
                 CupertinoSwitch(
                     value: switchValue,
                     onChanged: (value) {
+                      final onePlayerGameSettingNotifier =
+                          ref.read(onePlayerGameSettingProvider.notifier);
                       setState(() {
                         switchValue = value;
                       });
+                      onePlayerGameSettingNotifier
+                          .updateFirstMoveOrSecondMove(switchValue);
                     }),
               ],
             ),
@@ -205,7 +291,7 @@ class _GameSettingPage extends State<GameSettingPage> {
               ),
             ),
             const SizedBox(height: 20),
-            InputName(controller: _controller),
+            InputName(controller: _controller, battleNumber: battleNumber),
           ],
         ),
       ),
@@ -238,5 +324,148 @@ class _GameSettingPage extends State<GameSettingPage> {
     } else {
       return 12;
     }
+  }
+
+  void setWaitTimeItems(List<DropdownMenuItem<String>> items) {
+    items
+      ..add(
+        const DropdownMenuItem(
+          value: AppText.tenMinutes,
+          child: Text(
+            AppText.tenMinutes,
+            style: TextStyle(
+              fontSize: 25,
+              fontWeight: FontWeight.w400,
+              color: AppColor.textColorBlack,
+            ),
+          ),
+        ),
+      )
+      ..add(const DropdownMenuItem(
+        value: AppText.thirtyMinutes,
+        child: Text(
+          AppText.thirtyMinutes,
+          style: TextStyle(
+            fontSize: 25,
+            fontWeight: FontWeight.w400,
+            color: AppColor.textColorBlack,
+          ),
+        ),
+      ))
+      ..add(const DropdownMenuItem(
+        value: AppText.oneHour,
+        child: Text(
+          AppText.oneHour,
+          style: TextStyle(
+            fontSize: 25,
+            fontWeight: FontWeight.w400,
+            color: AppColor.textColorBlack,
+          ),
+        ),
+      ))
+      ..add(const DropdownMenuItem(
+        value: AppText.twoHours,
+        child: Text(
+          AppText.twoHours,
+          style: TextStyle(
+            fontSize: 25,
+            fontWeight: FontWeight.w400,
+            color: AppColor.textColorBlack,
+          ),
+        ),
+      ))
+      ..add(const DropdownMenuItem(
+        value: AppText.fourHours,
+        child: Text(
+          AppText.fourHours,
+          style: TextStyle(
+            fontSize: 25,
+            fontWeight: FontWeight.w400,
+            color: AppColor.textColorBlack,
+          ),
+        ),
+      ));
+  }
+
+  void setNumberOfPeopleItems() {
+    _manyPlayersNumberOfPeopleItems
+      ..add(
+        const DropdownMenuItem(
+          value: AppText.threePeople,
+          child: Text(
+            AppText.threePeople,
+            style: TextStyle(
+              fontSize: 25,
+              fontWeight: FontWeight.w400,
+              color: AppColor.textColorBlack,
+            ),
+          ),
+        ),
+      )
+      ..add(
+        const DropdownMenuItem(
+          value: AppText.fourPeople,
+          child: Text(
+            AppText.fourPeople,
+            style: TextStyle(
+              fontSize: 25,
+              fontWeight: FontWeight.w400,
+              color: AppColor.textColorBlack,
+            ),
+          ),
+        ),
+      )
+      ..add(
+        const DropdownMenuItem(
+          value: AppText.fivePeople,
+          child: Text(
+            AppText.fivePeople,
+            style: TextStyle(
+              fontSize: 25,
+              fontWeight: FontWeight.w400,
+              color: AppColor.textColorBlack,
+            ),
+          ),
+        ),
+      )
+      ..add(
+        const DropdownMenuItem(
+          value: AppText.sixPeople,
+          child: Text(
+            AppText.sixPeople,
+            style: TextStyle(
+              fontSize: 25,
+              fontWeight: FontWeight.w400,
+              color: AppColor.textColorBlack,
+            ),
+          ),
+        ),
+      )
+      ..add(
+        const DropdownMenuItem(
+          value: AppText.sevenPeople,
+          child: Text(
+            AppText.sevenPeople,
+            style: TextStyle(
+              fontSize: 25,
+              fontWeight: FontWeight.w400,
+              color: AppColor.textColorBlack,
+            ),
+          ),
+        ),
+      )
+      ..add(
+        const DropdownMenuItem(
+          value: AppText.eightPeople,
+          child: Text(
+            AppText.eightPeople,
+            style: TextStyle(
+              fontSize: 25,
+              fontWeight: FontWeight.w400,
+              color: AppColor.textColorBlack,
+            ),
+          ),
+        ),
+      );
   }
 }

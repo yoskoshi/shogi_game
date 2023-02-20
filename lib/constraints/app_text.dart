@@ -14,6 +14,16 @@ class AppText {
   static const String inputName = "名前を入力する";
   static const String numberOfPeople = "人数";
   static const String tenPeople = "10人";
+  static const String threePeople = "3人";
+  static const String fourPeople = "4人";
+  static const String fivePeople = "5人";
+  static const String sixPeople = "6人";
+  static const String sevenPeople = "7人";
+  static const String eightPeople = "8人";
   static const String allottedTime = "持ち時間";
   static const String tenMinutes = "10分";
+  static const String thirtyMinutes = "30分";
+  static const String oneHour = "1時間";
+  static const String twoHours = "2時間";
+  static const String fourHours = "4時間";
 }
