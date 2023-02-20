@@ -84,8 +84,7 @@ class _GameSettingPage extends ConsumerState<GameSettingPage> {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (_) =>
-                                  const ManyPlayersNameSettingPage()));
+                              builder: (_) => ManyPlayersNameSettingPage()));
                     } else {
                       Navigator.of(context).pushReplacement(
                           MaterialPageRoute(builder: (_) => const GamePage()));
