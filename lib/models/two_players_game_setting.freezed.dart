@@ -116,7 +116,9 @@ class __$$_TwoPlayersGameSettingCopyWithImpl<$Res>
 
 class _$_TwoPlayersGameSetting implements _TwoPlayersGameSetting {
   const _$_TwoPlayersGameSetting(
-      {this.firstMoveName = "", this.secondMoveName = "", this.waitTime = ""});
+      {this.firstMoveName = "",
+      this.secondMoveName = "",
+      this.waitTime = "10分"});
 
   @override
   @JsonKey()

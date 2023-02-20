@@ -7,6 +7,6 @@ class TwoPlayersGameSetting with _$TwoPlayersGameSetting {
   const factory TwoPlayersGameSetting({
     @Default("") String firstMoveName,
     @Default("") String secondMoveName,
-    @Default("") String waitTime,
+    @Default("10分") String waitTime,
   }) = _TwoPlayersGameSetting;
 }
