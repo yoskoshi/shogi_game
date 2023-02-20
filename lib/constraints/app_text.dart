@@ -26,4 +26,6 @@ class AppText {
   static const String oneHour = "1時間";
   static const String twoHours = "2時間";
   static const String fourHours = "4時間";
+  static const String nameEnglishVer = "name";
+  static const String createTournamentTable = "トーナメント表を作成";
 }
