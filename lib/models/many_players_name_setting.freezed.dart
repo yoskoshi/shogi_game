@@ -16,7 +16,14 @@ final _privateConstructorUsedError = UnsupportedError(
 
 /// @nodoc
 mixin _$ManyPlayersNameSetting {
-  List<String> get nameList => throw _privateConstructorUsedError;
+  String get name1 => throw _privateConstructorUsedError;
+  String get name2 => throw _privateConstructorUsedError;
+  String get name3 => throw _privateConstructorUsedError;
+  String get name4 => throw _privateConstructorUsedError;
+  String get name5 => throw _privateConstructorUsedError;
+  String get name6 => throw _privateConstructorUsedError;
+  String get name7 => throw _privateConstructorUsedError;
+  String get name8 => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
   $ManyPlayersNameSettingCopyWith<ManyPlayersNameSetting> get copyWith =>
@@ -29,7 +36,15 @@ abstract class $ManyPlayersNameSettingCopyWith<$Res> {
           $Res Function(ManyPlayersNameSetting) then) =
       _$ManyPlayersNameSettingCopyWithImpl<$Res, ManyPlayersNameSetting>;
   @useResult
-  $Res call({List<String> nameList});
+  $Res call(
+      {String name1,
+      String name2,
+      String name3,
+      String name4,
+      String name5,
+      String name6,
+      String name7,
+      String name8});
 }
 
 /// @nodoc
@@ -46,13 +61,48 @@ class _$ManyPlayersNameSettingCopyWithImpl<$Res,
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? nameList = null,
+    Object? name1 = null,
+    Object? name2 = null,
+    Object? name3 = null,
+    Object? name4 = null,
+    Object? name5 = null,
+    Object? name6 = null,
+    Object? name7 = null,
+    Object? name8 = null,
   }) {
     return _then(_value.copyWith(
-      nameList: null == nameList
-          ? _value.nameList
-          : nameList // ignore: cast_nullable_to_non_nullable
-              as List<String>,
+      name1: null == name1
+          ? _value.name1
+          : name1 // ignore: cast_nullable_to_non_nullable
+              as String,
+      name2: null == name2
+          ? _value.name2
+          : name2 // ignore: cast_nullable_to_non_nullable
+              as String,
+      name3: null == name3
+          ? _value.name3
+          : name3 // ignore: cast_nullable_to_non_nullable
+              as String,
+      name4: null == name4
+          ? _value.name4
+          : name4 // ignore: cast_nullable_to_non_nullable
+              as String,
+      name5: null == name5
+          ? _value.name5
+          : name5 // ignore: cast_nullable_to_non_nullable
+              as String,
+      name6: null == name6
+          ? _value.name6
+          : name6 // ignore: cast_nullable_to_non_nullable
+              as String,
+      name7: null == name7
+          ? _value.name7
+          : name7 // ignore: cast_nullable_to_non_nullable
+              as String,
+      name8: null == name8
+          ? _value.name8
+          : name8 // ignore: cast_nullable_to_non_nullable
+              as String,
     ) as $Val);
   }
 }
@@ -65,7 +115,15 @@ abstract class _$$_ManyPlayersNameSettingCopyWith<$Res>
       __$$_ManyPlayersNameSettingCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({List<String> nameList});
+  $Res call(
+      {String name1,
+      String name2,
+      String name3,
+      String name4,
+      String name5,
+      String name6,
+      String name7,
+      String name8});
 }
 
 /// @nodoc
@@ -80,13 +138,48 @@ class __$$_ManyPlayersNameSettingCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? nameList = null,
+    Object? name1 = null,
+    Object? name2 = null,
+    Object? name3 = null,
+    Object? name4 = null,
+    Object? name5 = null,
+    Object? name6 = null,
+    Object? name7 = null,
+    Object? name8 = null,
   }) {
     return _then(_$_ManyPlayersNameSetting(
-      nameList: null == nameList
-          ? _value._nameList
-          : nameList // ignore: cast_nullable_to_non_nullable
-              as List<String>,
+      name1: null == name1
+          ? _value.name1
+          : name1 // ignore: cast_nullable_to_non_nullable
+              as String,
+      name2: null == name2
+          ? _value.name2
+          : name2 // ignore: cast_nullable_to_non_nullable
+              as String,
+      name3: null == name3
+          ? _value.name3
+          : name3 // ignore: cast_nullable_to_non_nullable
+              as String,
+      name4: null == name4
+          ? _value.name4
+          : name4 // ignore: cast_nullable_to_non_nullable
+              as String,
+      name5: null == name5
+          ? _value.name5
+          : name5 // ignore: cast_nullable_to_non_nullable
+              as String,
+      name6: null == name6
+          ? _value.name6
+          : name6 // ignore: cast_nullable_to_non_nullable
+              as String,
+      name7: null == name7
+          ? _value.name7
+          : name7 // ignore: cast_nullable_to_non_nullable
+              as String,
+      name8: null == name8
+          ? _value.name8
+          : name8 // ignore: cast_nullable_to_non_nullable
+              as String,
     ));
   }
 }
@@ -95,21 +188,43 @@ class __$$_ManyPlayersNameSettingCopyWithImpl<$Res>
 
 class _$_ManyPlayersNameSetting implements _ManyPlayersNameSetting {
   const _$_ManyPlayersNameSetting(
-      {final List<String> nameList = const ["", "", "", "", "", "", "", ""]})
-      : _nameList = nameList;
+      {this.name1 = "",
+      this.name2 = "",
+      this.name3 = "",
+      this.name4 = "",
+      this.name5 = "",
+      this.name6 = "",
+      this.name7 = "",
+      this.name8 = ""});
 
-  final List<String> _nameList;
   @override
   @JsonKey()
-  List<String> get nameList {
-    if (_nameList is EqualUnmodifiableListView) return _nameList;
-    // ignore: implicit_dynamic_type
-    return EqualUnmodifiableListView(_nameList);
-  }
+  final String name1;
+  @override
+  @JsonKey()
+  final String name2;
+  @override
+  @JsonKey()
+  final String name3;
+  @override
+  @JsonKey()
+  final String name4;
+  @override
+  @JsonKey()
+  final String name5;
+  @override
+  @JsonKey()
+  final String name6;
+  @override
+  @JsonKey()
+  final String name7;
+  @override
+  @JsonKey()
+  final String name8;
 
   @override
   String toString() {
-    return 'ManyPlayersNameSetting(nameList: $nameList)';
+    return 'ManyPlayersNameSetting(name1: $name1, name2: $name2, name3: $name3, name4: $name4, name5: $name5, name6: $name6, name7: $name7, name8: $name8)';
   }
 
   @override
@@ -117,12 +232,19 @@ class _$_ManyPlayersNameSetting implements _ManyPlayersNameSetting {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$_ManyPlayersNameSetting &&
-            const DeepCollectionEquality().equals(other._nameList, _nameList));
+            (identical(other.name1, name1) || other.name1 == name1) &&
+            (identical(other.name2, name2) || other.name2 == name2) &&
+            (identical(other.name3, name3) || other.name3 == name3) &&
+            (identical(other.name4, name4) || other.name4 == name4) &&
+            (identical(other.name5, name5) || other.name5 == name5) &&
+            (identical(other.name6, name6) || other.name6 == name6) &&
+            (identical(other.name7, name7) || other.name7 == name7) &&
+            (identical(other.name8, name8) || other.name8 == name8));
   }
 
   @override
-  int get hashCode =>
-      Object.hash(runtimeType, const DeepCollectionEquality().hash(_nameList));
+  int get hashCode => Object.hash(
+      runtimeType, name1, name2, name3, name4, name5, name6, name7, name8);
 
   @JsonKey(ignore: true)
   @override
@@ -133,11 +255,32 @@ class _$_ManyPlayersNameSetting implements _ManyPlayersNameSetting {
 }
 
 abstract class _ManyPlayersNameSetting implements ManyPlayersNameSetting {
-  const factory _ManyPlayersNameSetting({final List<String> nameList}) =
-      _$_ManyPlayersNameSetting;
+  const factory _ManyPlayersNameSetting(
+      {final String name1,
+      final String name2,
+      final String name3,
+      final String name4,
+      final String name5,
+      final String name6,
+      final String name7,
+      final String name8}) = _$_ManyPlayersNameSetting;
 
   @override
-  List<String> get nameList;
+  String get name1;
+  @override
+  String get name2;
+  @override
+  String get name3;
+  @override
+  String get name4;
+  @override
+  String get name5;
+  @override
+  String get name6;
+  @override
+  String get name7;
+  @override
+  String get name8;
   @override
   @JsonKey(ignore: true)
   _$$_ManyPlayersNameSettingCopyWith<_$_ManyPlayersNameSetting> get copyWith =>
