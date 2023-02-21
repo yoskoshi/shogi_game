@@ -37,33 +37,32 @@ class GamePage extends ConsumerWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const SizedBox(height: 46),
-              const Padding(
-                padding: EdgeInsets.only(left: 15),
-                child: Text(
-                  AppText.yourTurn,
-                  style: TextStyle(
-                    fontSize: 30,
-                    fontWeight: FontWeight.w700,
-                    color: AppColor.white,
-                  ),
-                ),
-              ),
-              const SizedBox(height: 10),
-              Row(
-                children: const [
-                  Expanded(
-                    child: Text(
-                      AppText.cpu,
-                      textAlign: TextAlign.end,
+              Padding(
+                padding: const EdgeInsets.only(left: 15),
+                child: Row(
+                  children: const [
+                    Text(
+                      AppText.yourTurn,
                       style: TextStyle(
                         fontSize: 30,
                         fontWeight: FontWeight.w700,
                         color: AppColor.white,
                       ),
                     ),
-                  ),
-                  SizedBox(width: 22),
-                ],
+                    Expanded(
+                      child: Text(
+                        AppText.cpu,
+                        textAlign: TextAlign.end,
+                        style: TextStyle(
+                          fontSize: 30,
+                          fontWeight: FontWeight.w700,
+                          color: AppColor.white,
+                        ),
+                      ),
+                    ),
+                    SizedBox(width: 22),
+                  ],
+                ),
               ),
               Expanded(child: Container()),
               Row(
@@ -100,7 +99,7 @@ class GamePage extends ConsumerWidget {
                   const SizedBox(width: 15),
                 ],
               ),
-              const SizedBox(height: 58),
+              const SizedBox(height: 30),
             ],
           ),
           Column(
