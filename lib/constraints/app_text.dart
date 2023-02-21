@@ -28,4 +28,7 @@ class AppText {
   static const String fourHours = "4時間";
   static const String nameEnglishVer = "name";
   static const String createTournamentTable = "トーナメント表を作成";
+  static const String yourTurn = "あなたの番です";
+  static const String cpu = "cpu";
+  static const String haveTime = "持ち時間";
 }
