@@ -208,7 +208,7 @@ class _GameSettingPage extends ConsumerState<GameSettingPage> {
       style: const TextStyle(
         fontSize: 40,
         fontWeight: FontWeight.w700,
-        color: AppColor.textColorBlack,
+        color: AppColor.black,
       ),
     );
   }
@@ -227,7 +227,7 @@ class _GameSettingPage extends ConsumerState<GameSettingPage> {
             style: const TextStyle(
               fontSize: 25,
               fontWeight: FontWeight.w400,
-              color: AppColor.textColorBlack,
+              color: AppColor.black,
             ),
           ),
         ),
@@ -263,7 +263,7 @@ class _GameSettingPage extends ConsumerState<GameSettingPage> {
                     style: TextStyle(
                       fontSize: 25,
                       fontWeight: FontWeight.w400,
-                      color: AppColor.textColorBlack,
+                      color: AppColor.black,
                     ),
                   ),
                 ),
@@ -335,7 +335,7 @@ class _GameSettingPage extends ConsumerState<GameSettingPage> {
             style: TextStyle(
               fontSize: 25,
               fontWeight: FontWeight.w400,
-              color: AppColor.textColorBlack,
+              color: AppColor.black,
             ),
           ),
         ),
@@ -347,7 +347,7 @@ class _GameSettingPage extends ConsumerState<GameSettingPage> {
           style: TextStyle(
             fontSize: 25,
             fontWeight: FontWeight.w400,
-            color: AppColor.textColorBlack,
+            color: AppColor.black,
           ),
         ),
       ))
@@ -358,7 +358,7 @@ class _GameSettingPage extends ConsumerState<GameSettingPage> {
           style: TextStyle(
             fontSize: 25,
             fontWeight: FontWeight.w400,
-            color: AppColor.textColorBlack,
+            color: AppColor.black,
           ),
         ),
       ))
@@ -369,7 +369,7 @@ class _GameSettingPage extends ConsumerState<GameSettingPage> {
           style: TextStyle(
             fontSize: 25,
             fontWeight: FontWeight.w400,
-            color: AppColor.textColorBlack,
+            color: AppColor.black,
           ),
         ),
       ))
@@ -380,7 +380,7 @@ class _GameSettingPage extends ConsumerState<GameSettingPage> {
           style: TextStyle(
             fontSize: 25,
             fontWeight: FontWeight.w400,
-            color: AppColor.textColorBlack,
+            color: AppColor.black,
           ),
         ),
       ));
@@ -396,7 +396,7 @@ class _GameSettingPage extends ConsumerState<GameSettingPage> {
             style: TextStyle(
               fontSize: 25,
               fontWeight: FontWeight.w400,
-              color: AppColor.textColorBlack,
+              color: AppColor.black,
             ),
           ),
         ),
@@ -409,7 +409,7 @@ class _GameSettingPage extends ConsumerState<GameSettingPage> {
             style: TextStyle(
               fontSize: 25,
               fontWeight: FontWeight.w400,
-              color: AppColor.textColorBlack,
+              color: AppColor.black,
             ),
           ),
         ),
@@ -422,7 +422,7 @@ class _GameSettingPage extends ConsumerState<GameSettingPage> {
             style: TextStyle(
               fontSize: 25,
               fontWeight: FontWeight.w400,
-              color: AppColor.textColorBlack,
+              color: AppColor.black,
             ),
           ),
         ),
@@ -435,7 +435,7 @@ class _GameSettingPage extends ConsumerState<GameSettingPage> {
             style: TextStyle(
               fontSize: 25,
               fontWeight: FontWeight.w400,
-              color: AppColor.textColorBlack,
+              color: AppColor.black,
             ),
           ),
         ),
@@ -448,7 +448,7 @@ class _GameSettingPage extends ConsumerState<GameSettingPage> {
             style: TextStyle(
               fontSize: 25,
               fontWeight: FontWeight.w400,
-              color: AppColor.textColorBlack,
+              color: AppColor.black,
             ),
           ),
         ),
@@ -461,7 +461,7 @@ class _GameSettingPage extends ConsumerState<GameSettingPage> {
             style: TextStyle(
               fontSize: 25,
               fontWeight: FontWeight.w400,
-              color: AppColor.textColorBlack,
+              color: AppColor.black,
             ),
           ),
         ),
