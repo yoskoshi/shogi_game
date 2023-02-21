@@ -60,6 +60,7 @@ class ManyPlayersNameSettingPage extends ConsumerWidget {
             ),
             Expanded(flex: 7, child: Container()),
             Container(
+              height: 340,
               width: MediaQuery.of(context).size.width - 48,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(25),
@@ -70,12 +71,15 @@ class ManyPlayersNameSettingPage extends ConsumerWidget {
                     left: 20, top: 17, right: 23, bottom: 29),
                 child: Column(
                   children: [
-                    for (int i = 0; i < numberOfPeople; i++) ...{
-                      InputName(
-                          controller: controllerList[i],
-                          battleNumber: BattleNumber.manyPlayers),
-                      if (i != numberOfPeople - 1) const SizedBox(height: 10),
-                    }
+                    Expanded(
+                      child: ListView.builder(
+                          itemCount: numberOfPeople,
+                          itemBuilder: (BuildContext context, int index) {
+                            return InputName(
+                                controller: controllerList[index],
+                                battleNumber: BattleNumber.manyPlayers);
+                          }),
+                    )
                   ],
                 ),
               ),
