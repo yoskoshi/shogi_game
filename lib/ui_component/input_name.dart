@@ -30,7 +30,7 @@ class InputName extends ConsumerWidget {
             style: TextStyle(
               fontSize: 25,
               fontWeight: FontWeight.w400,
-              color: AppColor.textColorBlack,
+              color: AppColor.black,
             ),
           ),
         ),
