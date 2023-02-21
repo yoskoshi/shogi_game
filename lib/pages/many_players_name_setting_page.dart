@@ -33,64 +33,65 @@ class ManyPlayersNameSettingPage extends ConsumerWidget {
       controller8
     ];
     return Scaffold(
+        resizeToAvoidBottomInset: false,
         body: Stack(
-      children: [
-        Container(
-          width: double.infinity,
-          height: double.infinity,
-          decoration: const BoxDecoration(
-              image: DecorationImage(
-            colorFilter: ColorFilter.mode(
-                AppColor.luminosityColor, BlendMode.luminosity),
-            image: AssetImage(ImagePath.backgroundImagePath),
-            fit: BoxFit.cover,
-          )),
-        ),
-        Column(
           children: [
-            Expanded(flex: 13, child: Container()),
-            const Text(
-              AppText.nameEnglishVer,
-              style: TextStyle(
-                fontSize: 30,
-                fontWeight: FontWeight.w400,
-                color: AppColor.white,
-                fontFamily: AppText.moul,
-              ),
-            ),
-            Expanded(flex: 7, child: Container()),
             Container(
-              height: 340,
-              width: MediaQuery.of(context).size.width - 48,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(25),
-                color: AppColor.white,
-              ),
-              child: Padding(
-                padding: const EdgeInsets.only(
-                    left: 20, top: 17, right: 23, bottom: 29),
-                child: Column(
-                  children: [
-                    Expanded(
-                      child: ListView.builder(
-                          itemCount: numberOfPeople,
-                          itemBuilder: (BuildContext context, int index) {
-                            return InputName(
-                                controller: controllerList[index],
-                                battleNumber: BattleNumber.manyPlayers);
-                          }),
-                    )
-                  ],
-                ),
-              ),
+              width: double.infinity,
+              height: double.infinity,
+              decoration: const BoxDecoration(
+                  image: DecorationImage(
+                colorFilter: ColorFilter.mode(
+                    AppColor.luminosityColor, BlendMode.luminosity),
+                image: AssetImage(ImagePath.backgroundImagePath),
+                fit: BoxFit.cover,
+              )),
             ),
-            Expanded(flex: 7, child: Container()),
-            Button(buttonText: AppText.createTournamentTable, onTap: () {}),
-            const SizedBox(height: 109),
+            Column(
+              children: [
+                Expanded(flex: 13, child: Container()),
+                const Text(
+                  AppText.nameEnglishVer,
+                  style: TextStyle(
+                    fontSize: 30,
+                    fontWeight: FontWeight.w400,
+                    color: AppColor.white,
+                    fontFamily: AppText.moul,
+                  ),
+                ),
+                Expanded(flex: 7, child: Container()),
+                Container(
+                  height: 340,
+                  width: MediaQuery.of(context).size.width - 48,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(25),
+                    color: AppColor.white,
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.only(
+                        left: 20, top: 17, right: 23, bottom: 29),
+                    child: Column(
+                      children: [
+                        Expanded(
+                          child: ListView.builder(
+                              itemCount: numberOfPeople,
+                              itemBuilder: (BuildContext context, int index) {
+                                return InputName(
+                                    controller: controllerList[index],
+                                    battleNumber: BattleNumber.manyPlayers);
+                              }),
+                        )
+                      ],
+                    ),
+                  ),
+                ),
+                Expanded(flex: 7, child: Container()),
+                Button(buttonText: AppText.createTournamentTable, onTap: () {}),
+                const SizedBox(height: 109),
+              ],
+            )
           ],
-        )
-      ],
-    ));
+        ));
   }
 
   int convertNumberOfPeopleInt(WidgetRef ref) {
