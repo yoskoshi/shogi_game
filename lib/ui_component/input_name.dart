@@ -38,7 +38,7 @@ class InputName extends ConsumerWidget {
           width: 170,
           child: TextField(
             controller: controller,
-            onSubmitted: (value) {
+            onChanged: (value) {
               if (battleNumber == BattleNumber.onePlayer) {
                 final onePlayerGameSettingNotifier =
                     ref.read(onePlayerGameSettingProvider.notifier);
@@ -55,11 +55,11 @@ class InputName extends ConsumerWidget {
                   twoPlayersGameSettingNotifier
                       .updateSecondMoveName(controller.text);
                 }
-              } else {
+              } else if (battleNumber == BattleNumber.manyPlayers) {
                 final manyPlayersNameSettingNotifier =
-                    ref.read(manyPlayersNameSettingProvider.notifier);
-                manyPlayersNameSettingNotifier.updateNameList(
-                    controller.text, index!);
+                    ref.watch(manyPlayersNameSettingProvider.notifier);
+                manyPlayersNameSettingNotifier.updateName(
+                    index!, controller.text);
               }
             },
           ),
