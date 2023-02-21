@@ -77,8 +77,10 @@ class ManyPlayersNameSettingPage extends ConsumerWidget {
                               itemCount: numberOfPeople,
                               itemBuilder: (BuildContext context, int index) {
                                 return InputName(
-                                    controller: controllerList[index],
-                                    battleNumber: BattleNumber.manyPlayers);
+                                  controller: controllerList[index],
+                                  battleNumber: BattleNumber.manyPlayers,
+                                  index: index,
+                                );
                               }),
                         )
                       ],
