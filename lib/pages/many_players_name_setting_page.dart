@@ -3,6 +3,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shogi_game/constraints/app_color.dart';
 import 'package:shogi_game/constraints/app_text.dart';
 import 'package:shogi_game/constraints/image_path.dart';
+import 'package:shogi_game/pages/many_players_tournament_table_page.dart';
 import 'package:shogi_game/pages/top_page.dart';
 import 'package:shogi_game/providers/many_players_game_setting_notifier.dart';
 import 'package:shogi_game/ui_component/button.dart';
@@ -70,25 +71,36 @@ class ManyPlayersNameSettingPage extends ConsumerWidget {
                   child: Padding(
                     padding: const EdgeInsets.only(
                         left: 20, top: 17, right: 23, bottom: 29),
-                    child: Column(
-                      children: [
-                        Expanded(
-                          child: ListView.builder(
-                              itemCount: numberOfPeople,
-                              itemBuilder: (BuildContext context, int index) {
-                                return InputName(
-                                  controller: controllerList[index],
-                                  battleNumber: BattleNumber.manyPlayers,
-                                  index: index,
-                                );
-                              }),
-                        )
-                      ],
+                    child: SingleChildScrollView(
+                      child: Container(
+                        constraints: const BoxConstraints(maxHeight: 500),
+                        child: Column(
+                          children: [
+                            for (int i = 0; i < numberOfPeople; i++) ...{
+                              InputName(
+                                controller: controllerList[i],
+                                battleNumber: BattleNumber.manyPlayers,
+                                index: i,
+                              ),
+                              if (i != numberOfPeople - 1)
+                                const SizedBox(height: 10),
+                            }
+                          ],
+                        ),
+                      ),
                     ),
                   ),
                 ),
                 Expanded(flex: 7, child: Container()),
-                Button(buttonText: AppText.createTournamentTable, onTap: () {}),
+                Button(
+                    buttonText: AppText.createTournamentTable,
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (_) =>
+                                  const ManyPlayersTournamentTablePage()));
+                    }),
                 const SizedBox(height: 109),
               ],
             )
