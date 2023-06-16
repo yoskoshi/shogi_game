@@ -15,28 +15,41 @@ class GameSystemNotifier extends StateNotifier<GameSystem> {
   bool isHighLight = false;
 
   //駒の動かせる位置を指定
-  void nextLocation(
-      String text, int indexX, int indexY, List<List<String>> pieceTextList) {
-    if (text == "歩" || text == "桂" || text == "銀" || text == "金" || text == "王") {
-      nextLocationWithoutKyouAndKakuAndHisya(indexX, indexY, pieceTextList, text);
+  void nextLocation(String text, int indexX, int indexY,
+      List<List<String>> pieceTextList, bool isRival) {
+    if (text == "歩" ||
+        text == "桂" ||
+        text == "銀" ||
+        text == "金" ||
+        text == "王" ||
+        text == "玉") {
+      nextLocationWithoutKyouAndKakuAndHisya(
+          indexX, indexY, pieceTextList, text, isRival);
     } else if (text == "香") {
-      kyoushaNextLocation(indexX, indexY, pieceTextList);
+      kyoushaNextLocation(indexX, indexY, pieceTextList, isRival);
     } else if (text == "角" || text == "飛") {
       kakuAndHisyaNextLocation(indexX, indexY, pieceTextList, text);
     }
   }
 
   //
-  void nextLocationWithoutKyouAndKakuAndHisya(int indexX, int indexY, List<List<String>> pieceTextList, String text) {
+  void nextLocationWithoutKyouAndKakuAndHisya(int indexX, int indexY,
+      List<List<String>> pieceTextList, String text, bool isRival) {
     List<int> installNextLocationX = [];
     List<int> installNextLocationY = [];
-    if (text == "歩") {
+    if (text == "歩" && !isRival) {
       installNextLocationX = [indexX];
       installNextLocationY = [indexY - 1];
-    } else if (text == "桂") {
+    } else if (text == "歩" && isRival) {
+      installNextLocationX = [indexX];
+      installNextLocationY = [indexY + 1];
+    } else if (text == "桂" && !isRival) {
       installNextLocationX = [indexX + 1, indexX - 1];
       installNextLocationY = [indexY - 2, indexY - 2];
-    } else if (text == "銀") {
+    } else if (text == "桂" && isRival) {
+      installNextLocationX = [indexX + 1, indexX - 1];
+      installNextLocationY = [indexY + 2, indexY + 2];
+    } else if (text == "銀" && !isRival) {
       installNextLocationX = [
         indexX + 1,
         indexX - 1,
@@ -51,7 +64,22 @@ class GameSystemNotifier extends StateNotifier<GameSystem> {
         indexY - 1,
         indexY - 1,
       ];
-    } else if (text == "金") {
+    } else if (text == "銀" && isRival) {
+      installNextLocationX = [
+        indexX + 1,
+        indexX,
+        indexX - 1,
+        indexX + 1,
+        indexX - 1
+      ];
+      installNextLocationY = [
+        indexY + 1,
+        indexY + 1,
+        indexY + 1,
+        indexY - 1,
+        indexY - 1
+      ];
+    } else if (text == "金" && !isRival) {
       installNextLocationX = [
         indexX,
         indexX + 1,
@@ -69,7 +97,24 @@ class GameSystemNotifier extends StateNotifier<GameSystem> {
         indexY - 1,
         indexY - 1,
       ];
-    } else if (text == "王") {
+    } else if (text == "金" && isRival) {
+      installNextLocationX = [
+        indexX + 1,
+        indexX,
+        indexX - 1,
+        indexX + 1,
+        indexX - 1,
+        indexX,
+      ];
+      installNextLocationY = [
+        indexY + 1,
+        indexY + 1,
+        indexY + 1,
+        indexY,
+        indexY,
+        indexY - 1,
+      ];
+    } else if (text == "王" || text == "玉") {
       installNextLocationX = [
         indexX + 1,
         indexX,
@@ -94,8 +139,12 @@ class GameSystemNotifier extends StateNotifier<GameSystem> {
 
     for (int i = 0; i < initialInstallNextLocationLength(text); i++) {
       for (int j = 0; j < installNextLocationY.length; j++) {
-        bool isNotAbleToMove = installNextLocationX[j] > 8 || installNextLocationX[j] < 0 || installNextLocationY[j] > 8 || installNextLocationY[j] < 0 || pieceTextList[installNextLocationY[j]][installNextLocationX[j]] !=
-            " ";
+        bool isNotAbleToMove = installNextLocationX[j] > 8 ||
+            installNextLocationX[j] < 0 ||
+            installNextLocationY[j] > 8 ||
+            installNextLocationY[j] < 0 ||
+            pieceTextList[installNextLocationY[j]][installNextLocationX[j]] !=
+                " ";
         if (isNotAbleToMove) {
           installNextLocationX.removeAt(j);
           installNextLocationY.removeAt(j);
@@ -104,7 +153,8 @@ class GameSystemNotifier extends StateNotifier<GameSystem> {
       }
     }
 
-    List<int> addNumberList = List.generate(20 - installNextLocationX.length, (index) => -1);
+    List<int> addNumberList =
+        List.generate(20 - installNextLocationX.length, (index) => -1);
     installNextLocationX.addAll(addNumberList);
     installNextLocationY.addAll(addNumberList);
     state = state.copyWith(
@@ -122,23 +172,36 @@ class GameSystemNotifier extends StateNotifier<GameSystem> {
       result = 5;
     } else if (text == "金") {
       result = 6;
-    } else if (text == "王") {
+    } else if (text == "王" || text == "玉") {
       result = 8;
     }
     return result;
   }
 
   void kyoushaNextLocation(
-      int indexX, int indexY, List<List<String>> pieceTextList) {
+      int indexX, int indexY, List<List<String>> pieceTextList, bool isRival) {
     List<int> installNextLocationX = List.generate(20, (index) => -1);
     List<int> installNextLocationY = List.generate(20, (index) => -1);
-    for (int i = 0; i < 8; i++) {
-      if (indexY - (i + 1) >= 0 &&
-          pieceTextList[indexY - (i + 1)][indexX] == " ") {
-        installNextLocationX[i] = indexX;
-        installNextLocationY[i] = indexY - (i + 1);
-      } else {
-        break;
+    if (isRival) {
+      for (int i = 0; i < 8; i++) {
+        if (indexY + (i + 1) <= 8 &&
+            pieceTextList[indexY + (i + 1)][indexX] == " ") {
+          installNextLocationX[i] = indexX;
+          installNextLocationY[i] = indexY + (i + 1);
+        } else {
+          break;
+        }
+      }
+      installNextLocationY.sort((a, b) => b.compareTo(a));
+    } else {
+      for (int i = 0; i < 8; i++) {
+        if (indexY - (i + 1) >= 0 &&
+            pieceTextList[indexY - (i + 1)][indexX] == " ") {
+          installNextLocationX[i] = indexX;
+          installNextLocationY[i] = indexY - (i + 1);
+        } else {
+          break;
+        }
       }
     }
     state = state.copyWith(
@@ -146,13 +209,16 @@ class GameSystemNotifier extends StateNotifier<GameSystem> {
         installLocationYList: installNextLocationY);
   }
 
-  void kakuAndHisyaNextLocation(int indexX, int indexY, List<List<String>> pieceTextList, String text) {
+  void kakuAndHisyaNextLocation(
+      int indexX, int indexY, List<List<String>> pieceTextList, String text) {
     List<int> installNextLocationX = [];
     List<int> installNextLocationY = [];
     if (text == "角") {
       //左上の置ける所を候補に入れる
       for (int i = 0; i < 8; i++) {
-        if (indexX - (i + 1) >= 0 && indexY - (i + 1) >= 0 && pieceTextList[indexY - (i + 1)][indexX - (i + 1)] == " ") {
+        if (indexX - (i + 1) >= 0 &&
+            indexY - (i + 1) >= 0 &&
+            pieceTextList[indexY - (i + 1)][indexX - (i + 1)] == " ") {
           installNextLocationX.add(indexX - (i + 1));
           installNextLocationY.add(indexY - (i + 1));
         } else {
@@ -161,7 +227,9 @@ class GameSystemNotifier extends StateNotifier<GameSystem> {
       }
       //右上の置ける所を候補に入れる
       for (int i = 0; i < 8; i++) {
-        if (indexX + (i + 1) <= 8 && indexY - (i + 1) >= 0 && pieceTextList[indexY - (i + 1)][indexX + (i + 1)] == " ") {
+        if (indexX + (i + 1) <= 8 &&
+            indexY - (i + 1) >= 0 &&
+            pieceTextList[indexY - (i + 1)][indexX + (i + 1)] == " ") {
           installNextLocationX.add(indexX + (i + 1));
           installNextLocationY.add(indexY - (i + 1));
         } else {
@@ -170,7 +238,9 @@ class GameSystemNotifier extends StateNotifier<GameSystem> {
       }
       //左下の置ける所を候補に入れる
       for (int i = 0; i < 8; i++) {
-        if (indexX - (i + 1) >= 0 && indexY + (i + 1) <= 8 && pieceTextList[indexY + (i + 1)][indexX - (i + 1)] == " ") {
+        if (indexX - (i + 1) >= 0 &&
+            indexY + (i + 1) <= 8 &&
+            pieceTextList[indexY + (i + 1)][indexX - (i + 1)] == " ") {
           installNextLocationX.add(indexX - (i + 1));
           installNextLocationY.add(indexY + (i + 1));
         } else {
@@ -179,7 +249,9 @@ class GameSystemNotifier extends StateNotifier<GameSystem> {
       }
       //右下の置ける所を候補に入れる
       for (int i = 0; i < 8; i++) {
-        if (indexX + (i + 1) <= 8 && indexY + (i + 1) <= 8 && pieceTextList[indexY + (i + 1)][indexX + (i + 1)] == " ") {
+        if (indexX + (i + 1) <= 8 &&
+            indexY + (i + 1) <= 8 &&
+            pieceTextList[indexY + (i + 1)][indexX + (i + 1)] == " ") {
           installNextLocationX.add(indexX + (i + 1));
           installNextLocationY.add(indexY + (i + 1));
         } else {
@@ -189,7 +261,8 @@ class GameSystemNotifier extends StateNotifier<GameSystem> {
     } else if (text == "飛") {
       //上で置ける所を候補に入れる
       for (int i = 0; i < 8; i++) {
-        if (indexY - (i + 1) >= 0 && pieceTextList[indexY - (i + 1)][indexX] == " ") {
+        if (indexY - (i + 1) >= 0 &&
+            pieceTextList[indexY - (i + 1)][indexX] == " ") {
           installNextLocationX.add(indexX);
           installNextLocationY.add(indexY - (i + 1));
         } else {
@@ -198,7 +271,8 @@ class GameSystemNotifier extends StateNotifier<GameSystem> {
       }
       //左で置ける所を候補に入れる
       for (int i = 0; i < 8; i++) {
-        if (indexX - (i + 1) >= 0 && pieceTextList[indexY][indexX - (i + 1)] == " ") {
+        if (indexX - (i + 1) >= 0 &&
+            pieceTextList[indexY][indexX - (i + 1)] == " ") {
           installNextLocationX.add(indexX - (i + 1));
           installNextLocationY.add(indexY);
         } else {
@@ -207,7 +281,8 @@ class GameSystemNotifier extends StateNotifier<GameSystem> {
       }
       //右で置ける所を候補に入れる
       for (int i = 0; i < 8; i++) {
-        if (indexX + (i + 1) <= 8 && pieceTextList[indexY][indexX + (i + 1)] == " ") {
+        if (indexX + (i + 1) <= 8 &&
+            pieceTextList[indexY][indexX + (i + 1)] == " ") {
           installNextLocationX.add(indexX + (i + 1));
           installNextLocationY.add(indexY);
         } else {
@@ -216,7 +291,8 @@ class GameSystemNotifier extends StateNotifier<GameSystem> {
       }
       //下で置ける所を候補に入れる
       for (int i = 0; i < 8; i++) {
-        if (indexY + (i + 1) >= 0 && pieceTextList[indexY + (i + 1)][indexX] == " ") {
+        if (indexY + (i + 1) >= 0 &&
+            pieceTextList[indexY + (i + 1)][indexX] == " ") {
           installNextLocationX.add(indexX);
           installNextLocationY.add(indexY + (i + 1));
         } else {
@@ -234,7 +310,8 @@ class GameSystemNotifier extends StateNotifier<GameSystem> {
           int savedDataY = installNextLocationY[j];
           installNextLocationY[j] = installNextLocationY[j + 1];
           installNextLocationY[j + 1] = savedDataY;
-        } else if (installNextLocationY[j] == installNextLocationY[j + 1] && installNextLocationX[j] < installNextLocationX[j + 1]) {
+        } else if (installNextLocationY[j] == installNextLocationY[j + 1] &&
+            installNextLocationX[j] < installNextLocationX[j + 1]) {
           int savedDataX = installNextLocationX[j];
           installNextLocationX[j] = installNextLocationX[j + 1];
           installNextLocationX[j + 1] = savedDataX;
@@ -243,11 +320,14 @@ class GameSystemNotifier extends StateNotifier<GameSystem> {
     }
 
     //リストの要素数を20にする
-    List<int> addNumberList = List.generate(20 - installNextLocationX.length, (index) => -1);
+    List<int> addNumberList =
+        List.generate(20 - installNextLocationX.length, (index) => -1);
     installNextLocationX.addAll(addNumberList);
     installNextLocationY.addAll(addNumberList);
     //リストを更新する
-    state = state.copyWith(installLocationXList: installNextLocationX, installLocationYList: installNextLocationY);
+    state = state.copyWith(
+        installLocationXList: installNextLocationX,
+        installLocationYList: installNextLocationY);
   }
 
   void resetInstallLocationList() {

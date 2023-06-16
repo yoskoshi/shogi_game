@@ -179,11 +179,13 @@ class _GamePageState extends ConsumerState<GamePage> {
       onTap: () {
         if (step == 1) {
           gameSystemNotifier.updateSelectedPieceIndexXY(indexX, indexY);
-          gameSystemNotifier.nextLocation(text, indexX, indexY, pieceTextList);
+          gameSystemNotifier.nextLocation(text, indexX, indexY, pieceTextList,
+              initialRivalAndSelfList[indexY][indexX]);
           gameSystemNotifier.nextStep();
         }
         if (step == 2) {
-          nextLocation(pieceTextList, indexX, indexY, ref);
+          nextLocation(
+              pieceTextList, indexX, indexY, ref, initialRivalAndSelfList);
           gameSystemNotifier.resetInstallLocationList();
           gameSystemNotifier.changeTurn();
           gameSystemNotifier.resetIndex();
@@ -224,8 +226,8 @@ class _GamePageState extends ConsumerState<GamePage> {
     );
   }
 
-  List<List<String>> nextLocation(
-      List<List<String>> pieceTextList, int indexX, int indexY, WidgetRef ref) {
+  List<List<String>> nextLocation(List<List<String>> pieceTextList, int indexX,
+      int indexY, WidgetRef ref, List<List<bool>> initialRivalAndSelfList) {
     final installNextLocationXList = ref.watch(
         gameSystemProvider.select((value) => value.installLocationXList));
     final installNextLocationYList = ref.watch(
@@ -241,6 +243,10 @@ class _GamePageState extends ConsumerState<GamePage> {
           pieceTextList[indexY][indexX] =
               pieceTextList[selectedPieceIndexY][selectedPieceIndexX];
           pieceTextList[selectedPieceIndexY][selectedPieceIndexX] = " ";
+          initialRivalAndSelfList[indexY][indexX] =
+              initialRivalAndSelfList[selectedPieceIndexY][selectedPieceIndexX];
+          initialRivalAndSelfList[selectedPieceIndexY][selectedPieceIndexX] =
+              false;
         });
       }
     }
