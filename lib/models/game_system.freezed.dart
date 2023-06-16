@@ -22,6 +22,11 @@ mixin _$GameSystem {
   bool get isPlayersTurn => throw _privateConstructorUsedError;
   int get selectedPieceIndexX => throw _privateConstructorUsedError;
   int get selectedPieceIndexY => throw _privateConstructorUsedError;
+  List<String> get selfPawnList => throw _privateConstructorUsedError;
+  List<String> get rivalPawnList => throw _privateConstructorUsedError;
+  int get rivalPawnListIndex => throw _privateConstructorUsedError;
+  int get selfPawnListIndex => throw _privateConstructorUsedError;
+  bool get isRival => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
   $GameSystemCopyWith<GameSystem> get copyWith =>
@@ -40,7 +45,12 @@ abstract class $GameSystemCopyWith<$Res> {
       int step,
       bool isPlayersTurn,
       int selectedPieceIndexX,
-      int selectedPieceIndexY});
+      int selectedPieceIndexY,
+      List<String> selfPawnList,
+      List<String> rivalPawnList,
+      int rivalPawnListIndex,
+      int selfPawnListIndex,
+      bool isRival});
 }
 
 /// @nodoc
@@ -62,6 +72,11 @@ class _$GameSystemCopyWithImpl<$Res, $Val extends GameSystem>
     Object? isPlayersTurn = null,
     Object? selectedPieceIndexX = null,
     Object? selectedPieceIndexY = null,
+    Object? selfPawnList = null,
+    Object? rivalPawnList = null,
+    Object? rivalPawnListIndex = null,
+    Object? selfPawnListIndex = null,
+    Object? isRival = null,
   }) {
     return _then(_value.copyWith(
       installLocationXList: null == installLocationXList
@@ -88,6 +103,26 @@ class _$GameSystemCopyWithImpl<$Res, $Val extends GameSystem>
           ? _value.selectedPieceIndexY
           : selectedPieceIndexY // ignore: cast_nullable_to_non_nullable
               as int,
+      selfPawnList: null == selfPawnList
+          ? _value.selfPawnList
+          : selfPawnList // ignore: cast_nullable_to_non_nullable
+              as List<String>,
+      rivalPawnList: null == rivalPawnList
+          ? _value.rivalPawnList
+          : rivalPawnList // ignore: cast_nullable_to_non_nullable
+              as List<String>,
+      rivalPawnListIndex: null == rivalPawnListIndex
+          ? _value.rivalPawnListIndex
+          : rivalPawnListIndex // ignore: cast_nullable_to_non_nullable
+              as int,
+      selfPawnListIndex: null == selfPawnListIndex
+          ? _value.selfPawnListIndex
+          : selfPawnListIndex // ignore: cast_nullable_to_non_nullable
+              as int,
+      isRival: null == isRival
+          ? _value.isRival
+          : isRival // ignore: cast_nullable_to_non_nullable
+              as bool,
     ) as $Val);
   }
 }
@@ -106,7 +141,12 @@ abstract class _$$_GameSystemCopyWith<$Res>
       int step,
       bool isPlayersTurn,
       int selectedPieceIndexX,
-      int selectedPieceIndexY});
+      int selectedPieceIndexY,
+      List<String> selfPawnList,
+      List<String> rivalPawnList,
+      int rivalPawnListIndex,
+      int selfPawnListIndex,
+      bool isRival});
 }
 
 /// @nodoc
@@ -126,6 +166,11 @@ class __$$_GameSystemCopyWithImpl<$Res>
     Object? isPlayersTurn = null,
     Object? selectedPieceIndexX = null,
     Object? selectedPieceIndexY = null,
+    Object? selfPawnList = null,
+    Object? rivalPawnList = null,
+    Object? rivalPawnListIndex = null,
+    Object? selfPawnListIndex = null,
+    Object? isRival = null,
   }) {
     return _then(_$_GameSystem(
       installLocationXList: null == installLocationXList
@@ -152,6 +197,26 @@ class __$$_GameSystemCopyWithImpl<$Res>
           ? _value.selectedPieceIndexY
           : selectedPieceIndexY // ignore: cast_nullable_to_non_nullable
               as int,
+      selfPawnList: null == selfPawnList
+          ? _value._selfPawnList
+          : selfPawnList // ignore: cast_nullable_to_non_nullable
+              as List<String>,
+      rivalPawnList: null == rivalPawnList
+          ? _value._rivalPawnList
+          : rivalPawnList // ignore: cast_nullable_to_non_nullable
+              as List<String>,
+      rivalPawnListIndex: null == rivalPawnListIndex
+          ? _value.rivalPawnListIndex
+          : rivalPawnListIndex // ignore: cast_nullable_to_non_nullable
+              as int,
+      selfPawnListIndex: null == selfPawnListIndex
+          ? _value.selfPawnListIndex
+          : selfPawnListIndex // ignore: cast_nullable_to_non_nullable
+              as int,
+      isRival: null == isRival
+          ? _value.isRival
+          : isRival // ignore: cast_nullable_to_non_nullable
+              as bool,
     ));
   }
 }
@@ -207,9 +272,58 @@ class _$_GameSystem implements _GameSystem {
       this.step = 1,
       this.isPlayersTurn = true,
       this.selectedPieceIndexX = -1,
-      this.selectedPieceIndexY = -1})
+      this.selectedPieceIndexY = -1,
+      final List<String> selfPawnList = const [
+        " ",
+        " ",
+        " ",
+        " ",
+        " ",
+        " ",
+        " ",
+        " ",
+        " ",
+        " ",
+        " ",
+        " ",
+        " ",
+        " ",
+        " ",
+        " ",
+        " ",
+        " ",
+        " ",
+        " "
+      ],
+      final List<String> rivalPawnList = const [
+        " ",
+        " ",
+        " ",
+        " ",
+        " ",
+        " ",
+        " ",
+        " ",
+        " ",
+        " ",
+        " ",
+        " ",
+        " ",
+        " ",
+        " ",
+        " ",
+        " ",
+        " ",
+        " ",
+        " "
+      ],
+      this.rivalPawnListIndex = 0,
+      this.selfPawnListIndex = 0,
+      this.isRival = false})
       : _installLocationXList = installLocationXList,
-        _installLocationYList = installLocationYList;
+        _installLocationYList = installLocationYList,
+        _selfPawnList = selfPawnList,
+        _rivalPawnList = rivalPawnList;
 
   final List<int> _installLocationXList;
   @override
@@ -243,10 +357,37 @@ class _$_GameSystem implements _GameSystem {
   @override
   @JsonKey()
   final int selectedPieceIndexY;
+  final List<String> _selfPawnList;
+  @override
+  @JsonKey()
+  List<String> get selfPawnList {
+    if (_selfPawnList is EqualUnmodifiableListView) return _selfPawnList;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_selfPawnList);
+  }
+
+  final List<String> _rivalPawnList;
+  @override
+  @JsonKey()
+  List<String> get rivalPawnList {
+    if (_rivalPawnList is EqualUnmodifiableListView) return _rivalPawnList;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_rivalPawnList);
+  }
+
+  @override
+  @JsonKey()
+  final int rivalPawnListIndex;
+  @override
+  @JsonKey()
+  final int selfPawnListIndex;
+  @override
+  @JsonKey()
+  final bool isRival;
 
   @override
   String toString() {
-    return 'GameSystem(installLocationXList: $installLocationXList, installLocationYList: $installLocationYList, step: $step, isPlayersTurn: $isPlayersTurn, selectedPieceIndexX: $selectedPieceIndexX, selectedPieceIndexY: $selectedPieceIndexY)';
+    return 'GameSystem(installLocationXList: $installLocationXList, installLocationYList: $installLocationYList, step: $step, isPlayersTurn: $isPlayersTurn, selectedPieceIndexX: $selectedPieceIndexX, selectedPieceIndexY: $selectedPieceIndexY, selfPawnList: $selfPawnList, rivalPawnList: $rivalPawnList, rivalPawnListIndex: $rivalPawnListIndex, selfPawnListIndex: $selfPawnListIndex, isRival: $isRival)';
   }
 
   @override
@@ -264,7 +405,16 @@ class _$_GameSystem implements _GameSystem {
             (identical(other.selectedPieceIndexX, selectedPieceIndexX) ||
                 other.selectedPieceIndexX == selectedPieceIndexX) &&
             (identical(other.selectedPieceIndexY, selectedPieceIndexY) ||
-                other.selectedPieceIndexY == selectedPieceIndexY));
+                other.selectedPieceIndexY == selectedPieceIndexY) &&
+            const DeepCollectionEquality()
+                .equals(other._selfPawnList, _selfPawnList) &&
+            const DeepCollectionEquality()
+                .equals(other._rivalPawnList, _rivalPawnList) &&
+            (identical(other.rivalPawnListIndex, rivalPawnListIndex) ||
+                other.rivalPawnListIndex == rivalPawnListIndex) &&
+            (identical(other.selfPawnListIndex, selfPawnListIndex) ||
+                other.selfPawnListIndex == selfPawnListIndex) &&
+            (identical(other.isRival, isRival) || other.isRival == isRival));
   }
 
   @override
@@ -275,7 +425,12 @@ class _$_GameSystem implements _GameSystem {
       step,
       isPlayersTurn,
       selectedPieceIndexX,
-      selectedPieceIndexY);
+      selectedPieceIndexY,
+      const DeepCollectionEquality().hash(_selfPawnList),
+      const DeepCollectionEquality().hash(_rivalPawnList),
+      rivalPawnListIndex,
+      selfPawnListIndex,
+      isRival);
 
   @JsonKey(ignore: true)
   @override
@@ -291,7 +446,12 @@ abstract class _GameSystem implements GameSystem {
       final int step,
       final bool isPlayersTurn,
       final int selectedPieceIndexX,
-      final int selectedPieceIndexY}) = _$_GameSystem;
+      final int selectedPieceIndexY,
+      final List<String> selfPawnList,
+      final List<String> rivalPawnList,
+      final int rivalPawnListIndex,
+      final int selfPawnListIndex,
+      final bool isRival}) = _$_GameSystem;
 
   @override
   List<int> get installLocationXList;
@@ -305,6 +465,16 @@ abstract class _GameSystem implements GameSystem {
   int get selectedPieceIndexX;
   @override
   int get selectedPieceIndexY;
+  @override
+  List<String> get selfPawnList;
+  @override
+  List<String> get rivalPawnList;
+  @override
+  int get rivalPawnListIndex;
+  @override
+  int get selfPawnListIndex;
+  @override
+  bool get isRival;
   @override
   @JsonKey(ignore: true)
   _$$_GameSystemCopyWith<_$_GameSystem> get copyWith =>

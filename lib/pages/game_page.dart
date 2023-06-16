@@ -40,6 +40,14 @@ class _GamePageState extends ConsumerState<GamePage> {
   Widget build(BuildContext context) {
     final isPlayersTurn =
         ref.watch(gameSystemProvider.select((value) => value.isPlayersTurn));
+    final selfPawn =
+        ref.watch(gameSystemProvider.select((value) => value.selfPawnList));
+    final rivalPawn =
+        ref.watch(gameSystemProvider.select((value) => value.rivalPawnList));
+    final rivalPawnListIndex = ref
+        .watch(gameSystemProvider.select((value) => value.rivalPawnListIndex));
+    final selfPawnListIndex = ref
+        .watch(gameSystemProvider.select((value) => value.selfPawnListIndex));
     return WillPopScope(
       onWillPop: () async => false,
       child: Scaffold(
@@ -106,7 +114,58 @@ class _GamePageState extends ConsumerState<GamePage> {
                   ],
                 ),
               ),
+              if (selfPawnListIndex != -1) ...{
+                const SizedBox(height: 130),
+                Padding(
+                  padding: const EdgeInsets.only(left: 15),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      for (int i = 0; i < rivalPawnListIndex + 1; i++) ...{
+                        if (rivalPawn[i] != " ") ...{
+                          RotationTransition(
+                            turns: const AlwaysStoppedAnimation(180 / 360),
+                            child: Text(
+                              rivalPawn[i],
+                              style: const TextStyle(
+                                fontSize: 25,
+                                color: AppColor.black,
+                                fontWeight: FontWeight.w400,
+                              ),
+                            ),
+                          )
+                        },
+                        const SizedBox(width: 8),
+                      }
+                    ],
+                  ),
+                ),
+              },
               Expanded(child: Container()),
+              if (selfPawnListIndex != -1) ...{
+                Padding(
+                  padding: const EdgeInsets.only(left: 15),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      for (int i = 0; i < selfPawnListIndex + 1; i++) ...{
+                        if (selfPawn[i] != " ") ...{
+                          Text(
+                            selfPawn[i],
+                            style: const TextStyle(
+                              fontSize: 25,
+                              color: AppColor.black,
+                              fontWeight: FontWeight.w400,
+                            ),
+                          ),
+                        },
+                        const SizedBox(width: 8),
+                      }
+                    ],
+                  ),
+                ),
+              },
+              const SizedBox(height: 100),
               Row(
                 children: [
                   const SizedBox(width: 25),
@@ -175,17 +234,21 @@ class _GamePageState extends ConsumerState<GamePage> {
   Widget _board(String text, WidgetRef ref, int indexX, int indexY) {
     final gameSystemNotifier = ref.read(gameSystemProvider.notifier);
     final step = ref.watch(gameSystemProvider.select((value) => value.step));
+    final isRival =
+        ref.watch(gameSystemProvider.select((value) => value.isRival));
     return GestureDetector(
       onTap: () {
         if (step == 1) {
+          gameSystemNotifier
+              .updateIsRival(initialRivalAndSelfList[indexY][indexX]);
           gameSystemNotifier.updateSelectedPieceIndexXY(indexX, indexY);
           gameSystemNotifier.nextLocation(text, indexX, indexY, pieceTextList,
-              initialRivalAndSelfList[indexY][indexX]);
+              initialRivalAndSelfList[indexY][indexX], initialRivalAndSelfList);
           gameSystemNotifier.nextStep();
         }
         if (step == 2) {
-          nextLocation(
-              pieceTextList, indexX, indexY, ref, initialRivalAndSelfList);
+          nextLocation(pieceTextList, indexX, indexY, ref,
+              initialRivalAndSelfList, isRival);
           gameSystemNotifier.resetInstallLocationList();
           gameSystemNotifier.changeTurn();
           gameSystemNotifier.resetIndex();
@@ -226,8 +289,13 @@ class _GamePageState extends ConsumerState<GamePage> {
     );
   }
 
-  List<List<String>> nextLocation(List<List<String>> pieceTextList, int indexX,
-      int indexY, WidgetRef ref, List<List<bool>> initialRivalAndSelfList) {
+  List<List<String>> nextLocation(
+      List<List<String>> pieceTextList,
+      int indexX,
+      int indexY,
+      WidgetRef ref,
+      List<List<bool>> initialRivalAndSelfList,
+      bool isRival) {
     final installNextLocationXList = ref.watch(
         gameSystemProvider.select((value) => value.installLocationXList));
     final installNextLocationYList = ref.watch(
@@ -236,18 +304,50 @@ class _GamePageState extends ConsumerState<GamePage> {
         .watch(gameSystemProvider.select((value) => value.selectedPieceIndexX));
     final selectedPieceIndexY = ref
         .watch(gameSystemProvider.select((value) => value.selectedPieceIndexY));
+    final gameSystemNotifier = ref.read(gameSystemProvider.notifier);
     for (int i = 0; i < installNextLocationXList.length; i++) {
       if (indexX == installNextLocationXList[i] &&
           indexY == installNextLocationYList[i]) {
-        setState(() {
-          pieceTextList[indexY][indexX] =
-              pieceTextList[selectedPieceIndexY][selectedPieceIndexX];
-          pieceTextList[selectedPieceIndexY][selectedPieceIndexX] = " ";
-          initialRivalAndSelfList[indexY][indexX] =
-              initialRivalAndSelfList[selectedPieceIndexY][selectedPieceIndexX];
-          initialRivalAndSelfList[selectedPieceIndexY][selectedPieceIndexX] =
-              false;
-        });
+        if (!isRival &&
+            pieceTextList[indexY][indexX] != " " &&
+            initialRivalAndSelfList[indexY][indexX]) {
+          setState(() {
+            gameSystemNotifier.updateSelfPawn(pieceTextList[indexY][indexX]);
+            pieceTextList[indexY][indexX] =
+                pieceTextList[selectedPieceIndexY][selectedPieceIndexX];
+            pieceTextList[selectedPieceIndexY][selectedPieceIndexX] = " ";
+            initialRivalAndSelfList[indexY][indexX] =
+                initialRivalAndSelfList[selectedPieceIndexY]
+                    [selectedPieceIndexX];
+            initialRivalAndSelfList[selectedPieceIndexY][selectedPieceIndexX] =
+                false;
+          });
+        } else if (isRival &&
+            pieceTextList[indexY][indexX] != " " &&
+            !initialRivalAndSelfList[indexY][indexX]) {
+          setState(() {
+            gameSystemNotifier.updateRivalPawn(pieceTextList[indexY][indexX]);
+            pieceTextList[indexY][indexX] =
+                pieceTextList[selectedPieceIndexY][selectedPieceIndexX];
+            pieceTextList[selectedPieceIndexY][selectedPieceIndexX] = " ";
+            initialRivalAndSelfList[indexY][indexX] =
+                initialRivalAndSelfList[selectedPieceIndexY]
+                    [selectedPieceIndexX];
+            initialRivalAndSelfList[selectedPieceIndexY][selectedPieceIndexX] =
+                false;
+          });
+        } else {
+          setState(() {
+            pieceTextList[indexY][indexX] =
+                pieceTextList[selectedPieceIndexY][selectedPieceIndexX];
+            pieceTextList[selectedPieceIndexY][selectedPieceIndexX] = " ";
+            initialRivalAndSelfList[indexY][indexX] =
+                initialRivalAndSelfList[selectedPieceIndexY]
+                    [selectedPieceIndexX];
+            initialRivalAndSelfList[selectedPieceIndexY][selectedPieceIndexX] =
+                false;
+          });
+        }
       }
     }
     return pieceTextList;

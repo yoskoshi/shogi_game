@@ -15,26 +15,38 @@ class GameSystemNotifier extends StateNotifier<GameSystem> {
   bool isHighLight = false;
 
   //駒の動かせる位置を指定
-  void nextLocation(String text, int indexX, int indexY,
-      List<List<String>> pieceTextList, bool isRival) {
+  void nextLocation(
+      String text,
+      int indexX,
+      int indexY,
+      List<List<String>> pieceTextList,
+      bool isRival,
+      List<List<bool>> initialRivalAndSelfList) {
     if (text == "歩" ||
         text == "桂" ||
         text == "銀" ||
         text == "金" ||
         text == "王" ||
         text == "玉") {
-      nextLocationWithoutKyouAndKakuAndHisya(
-          indexX, indexY, pieceTextList, text, isRival);
+      nextLocationWithoutKyouAndKakuAndHisya(indexX, indexY, pieceTextList,
+          text, isRival, initialRivalAndSelfList);
     } else if (text == "香") {
-      kyoushaNextLocation(indexX, indexY, pieceTextList, isRival);
+      kyoushaNextLocation(
+          indexX, indexY, pieceTextList, isRival, initialRivalAndSelfList);
     } else if (text == "角" || text == "飛") {
-      kakuAndHisyaNextLocation(indexX, indexY, pieceTextList, text);
+      kakuAndHisyaNextLocation(indexX, indexY, pieceTextList, text, isRival,
+          initialRivalAndSelfList);
     }
   }
 
   //
-  void nextLocationWithoutKyouAndKakuAndHisya(int indexX, int indexY,
-      List<List<String>> pieceTextList, String text, bool isRival) {
+  void nextLocationWithoutKyouAndKakuAndHisya(
+      int indexX,
+      int indexY,
+      List<List<String>> pieceTextList,
+      String text,
+      bool isRival,
+      List<List<bool>> initialRivalAndSelfList) {
     List<int> installNextLocationX = [];
     List<int> installNextLocationY = [];
     if (text == "歩" && !isRival) {
@@ -139,12 +151,29 @@ class GameSystemNotifier extends StateNotifier<GameSystem> {
 
     for (int i = 0; i < initialInstallNextLocationLength(text); i++) {
       for (int j = 0; j < installNextLocationY.length; j++) {
-        bool isNotAbleToMove = installNextLocationX[j] > 8 ||
-            installNextLocationX[j] < 0 ||
-            installNextLocationY[j] > 8 ||
-            installNextLocationY[j] < 0 ||
-            pieceTextList[installNextLocationY[j]][installNextLocationX[j]] !=
-                " ";
+        bool isNotAbleToMove;
+        if (isRival) {
+          isNotAbleToMove = installNextLocationX[j] > 8 ||
+              installNextLocationX[j] < 0 ||
+              installNextLocationY[j] > 8 ||
+              installNextLocationY[j] < 0 ||
+              (pieceTextList[installNextLocationY[j]]
+                          [installNextLocationX[j]] !=
+                      " " &&
+                  initialRivalAndSelfList[installNextLocationY[j]]
+                      [installNextLocationX[j]]);
+        } else {
+          isNotAbleToMove = installNextLocationX[j] > 8 ||
+              installNextLocationX[j] < 0 ||
+              installNextLocationY[j] > 8 ||
+              installNextLocationY[j] < 0 ||
+              (pieceTextList[installNextLocationY[j]]
+                          [installNextLocationX[j]] !=
+                      " " &&
+                  !initialRivalAndSelfList[installNextLocationY[j]]
+                      [installNextLocationX[j]]);
+        }
+
         if (isNotAbleToMove) {
           installNextLocationX.removeAt(j);
           installNextLocationY.removeAt(j);
@@ -179,7 +208,11 @@ class GameSystemNotifier extends StateNotifier<GameSystem> {
   }
 
   void kyoushaNextLocation(
-      int indexX, int indexY, List<List<String>> pieceTextList, bool isRival) {
+      int indexX,
+      int indexY,
+      List<List<String>> pieceTextList,
+      bool isRival,
+      List<List<bool>> initialRivalAndSelfList) {
     List<int> installNextLocationX = List.generate(20, (index) => -1);
     List<int> installNextLocationY = List.generate(20, (index) => -1);
     if (isRival) {
@@ -188,6 +221,11 @@ class GameSystemNotifier extends StateNotifier<GameSystem> {
             pieceTextList[indexY + (i + 1)][indexX] == " ") {
           installNextLocationX[i] = indexX;
           installNextLocationY[i] = indexY + (i + 1);
+        } else if (pieceTextList[indexY + (i + 1)][indexX] != " " &&
+            !initialRivalAndSelfList[indexY + (i + 1)][indexX]) {
+          installNextLocationX[i] = indexX;
+          installNextLocationY[i] = indexY + (i + 1);
+          break;
         } else {
           break;
         }
@@ -199,6 +237,11 @@ class GameSystemNotifier extends StateNotifier<GameSystem> {
             pieceTextList[indexY - (i + 1)][indexX] == " ") {
           installNextLocationX[i] = indexX;
           installNextLocationY[i] = indexY - (i + 1);
+        } else if (pieceTextList[indexY - (i + 1)][indexX] != " " &&
+            initialRivalAndSelfList[indexY - (i + 1)][indexX]) {
+          installNextLocationX[i] = indexX;
+          installNextLocationY[i] = indexY - (i + 1);
+          break;
         } else {
           break;
         }
@@ -210,50 +253,95 @@ class GameSystemNotifier extends StateNotifier<GameSystem> {
   }
 
   void kakuAndHisyaNextLocation(
-      int indexX, int indexY, List<List<String>> pieceTextList, String text) {
+      int indexX,
+      int indexY,
+      List<List<String>> pieceTextList,
+      String text,
+      bool isRival,
+      List<List<bool>> initialRivalAndSelfList) {
     List<int> installNextLocationX = [];
     List<int> installNextLocationY = [];
     if (text == "角") {
       //左上の置ける所を候補に入れる
       for (int i = 0; i < 8; i++) {
+        bool isEnemyPiece = (!isRival &&
+                pieceTextList[indexY - (i + 1)][indexX - (i + 1)] != " " &&
+                initialRivalAndSelfList[indexY - (i + 1)][indexX - (i + 1)]) ||
+            (isRival &&
+                pieceTextList[indexY - (i + 1)][indexX - (i + 1)] != " " &&
+                !initialRivalAndSelfList[indexY - (i + 1)][indexX - (i + 1)]);
         if (indexX - (i + 1) >= 0 &&
             indexY - (i + 1) >= 0 &&
             pieceTextList[indexY - (i + 1)][indexX - (i + 1)] == " ") {
           installNextLocationX.add(indexX - (i + 1));
           installNextLocationY.add(indexY - (i + 1));
+        } else if (isEnemyPiece) {
+          installNextLocationX.add(indexX - (i + 1));
+          installNextLocationY.add(indexY - (i + 1));
+          break;
         } else {
           break;
         }
       }
       //右上の置ける所を候補に入れる
       for (int i = 0; i < 8; i++) {
+        bool isEnemyPiece = (!isRival &&
+                pieceTextList[indexY - (i + 1)][indexX + (i + 1)] != " " &&
+                initialRivalAndSelfList[indexY - (i + 1)][indexX + (i + 1)]) ||
+            (isRival &&
+                pieceTextList[indexY - (i + 1)][indexX + (i + 1)] != " " &&
+                !initialRivalAndSelfList[indexY - (i + 1)][indexX + (i + 1)]);
         if (indexX + (i + 1) <= 8 &&
             indexY - (i + 1) >= 0 &&
             pieceTextList[indexY - (i + 1)][indexX + (i + 1)] == " ") {
           installNextLocationX.add(indexX + (i + 1));
           installNextLocationY.add(indexY - (i + 1));
+        } else if (isEnemyPiece) {
+          installNextLocationX.add(indexX + (i + 1));
+          installNextLocationY.add(indexY - (i + 1));
+          break;
         } else {
           break;
         }
       }
       //左下の置ける所を候補に入れる
       for (int i = 0; i < 8; i++) {
+        bool isEnemyPiece = (!isRival &&
+                pieceTextList[indexY + (i + 1)][indexX - (i + 1)] != " " &&
+                initialRivalAndSelfList[indexY + (i + 1)][indexX - (i + 1)]) ||
+            (isRival &&
+                pieceTextList[indexY + (i + 1)][indexX - (i + 1)] != " " &&
+                !initialRivalAndSelfList[indexY + (i + 1)][indexX - (i + 1)]);
         if (indexX - (i + 1) >= 0 &&
             indexY + (i + 1) <= 8 &&
             pieceTextList[indexY + (i + 1)][indexX - (i + 1)] == " ") {
           installNextLocationX.add(indexX - (i + 1));
           installNextLocationY.add(indexY + (i + 1));
+        } else if (isEnemyPiece) {
+          installNextLocationX.add(indexX - (i + 1));
+          installNextLocationY.add(indexY + (i + 1));
+          break;
         } else {
           break;
         }
       }
       //右下の置ける所を候補に入れる
       for (int i = 0; i < 8; i++) {
+        bool isEnemyPiece = (!isRival &&
+                pieceTextList[indexY + (i + 1)][indexX + (i + 1)] != " " &&
+                initialRivalAndSelfList[indexY + (i + 1)][indexX + (i + 1)]) ||
+            (isRival &&
+                pieceTextList[indexY + (i + 1)][indexX + (i + 1)] != " " &&
+                !initialRivalAndSelfList[indexY + (i + 1)][indexX + (i + 1)]);
         if (indexX + (i + 1) <= 8 &&
             indexY + (i + 1) <= 8 &&
             pieceTextList[indexY + (i + 1)][indexX + (i + 1)] == " ") {
           installNextLocationX.add(indexX + (i + 1));
           installNextLocationY.add(indexY + (i + 1));
+        } else if (isEnemyPiece) {
+          installNextLocationX.add(indexX + (i + 1));
+          installNextLocationY.add(indexY + (i + 1));
+          break;
         } else {
           break;
         }
@@ -261,48 +349,94 @@ class GameSystemNotifier extends StateNotifier<GameSystem> {
     } else if (text == "飛") {
       //上で置ける所を候補に入れる
       for (int i = 0; i < 8; i++) {
+        bool isEnemyPiece = (indexY - (i + 1) >= 0 &&
+                !isRival &&
+                pieceTextList[indexY - (i + 1)][indexX] != " " &&
+                initialRivalAndSelfList[indexY - (i + 1)][indexX]) ||
+            (indexY - (i + 1) >= 0 &&
+                isRival &&
+                pieceTextList[indexY - (i + 1)][indexX] != " " &&
+                !initialRivalAndSelfList[indexY - (i + 1)][indexX]);
         if (indexY - (i + 1) >= 0 &&
             pieceTextList[indexY - (i + 1)][indexX] == " ") {
           installNextLocationX.add(indexX);
           installNextLocationY.add(indexY - (i + 1));
+        } else if (isEnemyPiece) {
+          installNextLocationX.add(indexX);
+          installNextLocationY.add(indexY - (i + 1));
+          break;
         } else {
           break;
         }
       }
       //左で置ける所を候補に入れる
       for (int i = 0; i < 8; i++) {
+        bool isEnemyPiece = (indexX - (i + 1) >= 0 &&
+                !isRival &&
+                pieceTextList[indexY][indexX - (i + 1)] != " " &&
+                initialRivalAndSelfList[indexY][indexX - (i + 1)]) ||
+            (indexX - (i + 1) >= 0 &&
+                isRival &&
+                pieceTextList[indexY][indexX - (i + 1)] != " " &&
+                !initialRivalAndSelfList[indexY][indexX - (i + 1)]);
         if (indexX - (i + 1) >= 0 &&
             pieceTextList[indexY][indexX - (i + 1)] == " ") {
           installNextLocationX.add(indexX - (i + 1));
           installNextLocationY.add(indexY);
+        } else if (isEnemyPiece) {
+          installNextLocationX.add(indexX - (i + 1));
+          installNextLocationY.add(indexY);
+          break;
         } else {
           break;
         }
       }
       //右で置ける所を候補に入れる
       for (int i = 0; i < 8; i++) {
+        bool isEnemyPiece = (indexX + (i + 1) <= 8 &&
+                !isRival &&
+                pieceTextList[indexY][indexX + (i + 1)] != " " &&
+                initialRivalAndSelfList[indexY][indexX + (i + 1)]) ||
+            (indexX + (i + 1) <= 8 &&
+                isRival &&
+                pieceTextList[indexY][indexX + (i + 1)] != " " &&
+                !initialRivalAndSelfList[indexY][indexX + (i + 1)]);
         if (indexX + (i + 1) <= 8 &&
             pieceTextList[indexY][indexX + (i + 1)] == " ") {
           installNextLocationX.add(indexX + (i + 1));
           installNextLocationY.add(indexY);
+        } else if (isEnemyPiece) {
+          installNextLocationX.add(indexX + (i + 1));
+          installNextLocationY.add(indexY);
+          break;
         } else {
           break;
         }
       }
       //下で置ける所を候補に入れる
       for (int i = 0; i < 8; i++) {
-        if (indexY + (i + 1) >= 0 &&
+        bool isEnemyPiece = (indexY + (i + 1) <= 8 &&
+                !isRival &&
+                pieceTextList[indexY + (i + 1)][indexX] != " " &&
+                initialRivalAndSelfList[indexY + (i + 1)][indexX]) ||
+            (indexX + (i + 1) <= 8 &&
+                isRival &&
+                pieceTextList[indexY + (i + 1)][indexX] != " " &&
+                !initialRivalAndSelfList[indexY + (i + 1)][indexX]);
+        if (indexY + (i + 1) <= 8 &&
             pieceTextList[indexY + (i + 1)][indexX] == " ") {
           installNextLocationX.add(indexX);
           installNextLocationY.add(indexY + (i + 1));
-        } else {
+        } else if (isEnemyPiece) {
+          installNextLocationX.add(indexX);
+          installNextLocationY.add(indexY + (i + 1));
           break;
         }
       }
     }
     //highLightできるようにリストをソートする
-    for (int i = 0; i < installNextLocationX.length - 1; i++) {
-      for (int j = 0; j < installNextLocationX.length - 1 - i; j++) {
+    for (int i = 0; i < installNextLocationY.length - 1; i++) {
+      for (int j = 0; j < installNextLocationY.length - 1 - i; j++) {
         if (installNextLocationY[j] < installNextLocationY[j + 1]) {
           int savedDataX = installNextLocationX[j];
           installNextLocationX[j] = installNextLocationX[j + 1];
@@ -394,5 +528,35 @@ class GameSystemNotifier extends StateNotifier<GameSystem> {
   void updateSelectedPieceIndexXY(int indexX, int indexY) {
     state = state.copyWith(
         selectedPieceIndexX: indexX, selectedPieceIndexY: indexY);
+  }
+
+  void updateSelfPawn(String text) {
+    List<String> selfPawn = [...state.selfPawnList];
+    int index = 0;
+    for (int i = 0; i < selfPawn.length; i++) {
+      if (selfPawn[i] == " ") {
+        index = i;
+        break;
+      }
+    }
+    selfPawn[index] = text;
+    state = state.copyWith(selfPawnList: selfPawn, selfPawnListIndex: index);
+  }
+
+  void updateRivalPawn(String text) {
+    List<String> rivalPawn = [...state.rivalPawnList];
+    int index = 0;
+    for (int i = 0; i < rivalPawn.length; i++) {
+      if (rivalPawn[i] == " ") {
+        index = i;
+        break;
+      }
+    }
+    rivalPawn[index] = text;
+    state = state.copyWith(rivalPawnList: rivalPawn, rivalPawnListIndex: index);
+  }
+
+  void updateIsRival(bool isRival) {
+    state = state.copyWith(isRival: isRival);
   }
 }

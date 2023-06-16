@@ -59,5 +59,57 @@ class GameSystem with _$GameSystem {
         int selectedPieceIndexX,
     @Default(-1)
         int selectedPieceIndexY,
+    @Default([
+      " ",
+      " ",
+      " ",
+      " ",
+      " ",
+      " ",
+      " ",
+      " ",
+      " ",
+      " ",
+      " ",
+      " ",
+      " ",
+      " ",
+      " ",
+      " ",
+      " ",
+      " ",
+      " ",
+      " ",
+    ])
+        List<String> selfPawnList,
+    @Default([
+      " ",
+      " ",
+      " ",
+      " ",
+      " ",
+      " ",
+      " ",
+      " ",
+      " ",
+      " ",
+      " ",
+      " ",
+      " ",
+      " ",
+      " ",
+      " ",
+      " ",
+      " ",
+      " ",
+      " ",
+    ])
+        List<String> rivalPawnList,
+    @Default(0)
+        int rivalPawnListIndex,
+    @Default(0)
+        int selfPawnListIndex,
+    @Default(false)
+        bool isRival,
   }) = _GameSystem;
 }
