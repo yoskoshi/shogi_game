@@ -36,6 +36,11 @@ class _GamePageState extends ConsumerState<GamePage> {
     [false, false, false, false, false, false, false, false, false],
   ];
   int index = -1;
+  int selectedIndex = 0;
+  bool isRivalPiecePlaced = false;
+  Color selfPawnColor = Colors.transparent;
+  Color rivalPawnColor = Colors.transparent;
+  int selectedIndexX = -1, selectedIndexY = -1;
   @override
   Widget build(BuildContext context) {
     final isPlayersTurn =
@@ -48,6 +53,8 @@ class _GamePageState extends ConsumerState<GamePage> {
         .watch(gameSystemProvider.select((value) => value.rivalPawnListIndex));
     final selfPawnListIndex = ref
         .watch(gameSystemProvider.select((value) => value.selfPawnListIndex));
+    final step = ref.watch(gameSystemProvider.select((value) => value.step));
+    final gameSystemNotifier = ref.read(gameSystemProvider.notifier);
     return WillPopScope(
       onWillPop: () async => false,
       child: Scaffold(
@@ -123,17 +130,46 @@ class _GamePageState extends ConsumerState<GamePage> {
                     children: [
                       for (int i = 0; i < rivalPawnListIndex + 1; i++) ...{
                         if (rivalPawn[i] != " ") ...{
-                          RotationTransition(
-                            turns: const AlwaysStoppedAnimation(180 / 360),
-                            child: Text(
-                              rivalPawn[i],
-                              style: const TextStyle(
-                                fontSize: 25,
-                                color: AppColor.black,
-                                fontWeight: FontWeight.w400,
+                          GestureDetector(
+                            onTap: () {
+                              if (step == 1) {
+                                gameSystemNotifier
+                                    .installIndexWithoutPiecesPlaced(
+                                        pieceTextList,
+                                        rivalPawn[i],
+                                        true,
+                                        initialRivalAndSelfList);
+                                rivalPawnColor = const Color(0xFFFFFFFF);
+                                selectedIndex = i;
+                                isRivalPiecePlaced = true;
+                                gameSystemNotifier.next2Step();
+                              }
+                              if (step == 3) {
+                                rivalPawnColor = Colors.transparent;
+                                gameSystemNotifier.resetInstallLocationList();
+                                gameSystemNotifier.updateIsHighLight();
+                                gameSystemNotifier.resetIndex();
+                                gameSystemNotifier.resetStep();
+                              }
+                            },
+                            child: Container(
+                              padding: const EdgeInsets.all(4),
+                              color: i == selectedIndex
+                                  ? rivalPawnColor
+                                  : Colors.transparent,
+                              child: RotationTransition(
+                                turns: const AlwaysStoppedAnimation(180 / 360),
+                                child: Text(
+                                  rivalPawn[i],
+                                  style: const TextStyle(
+                                    fontSize: 25,
+                                    color: AppColor.black,
+                                    fontWeight: FontWeight.w400,
+                                  ),
+                                ),
                               ),
                             ),
-                          )
+                          ),
                         },
                         const SizedBox(width: 8),
                       }
@@ -150,12 +186,41 @@ class _GamePageState extends ConsumerState<GamePage> {
                     children: [
                       for (int i = 0; i < selfPawnListIndex + 1; i++) ...{
                         if (selfPawn[i] != " ") ...{
-                          Text(
-                            selfPawn[i],
-                            style: const TextStyle(
-                              fontSize: 25,
-                              color: AppColor.black,
-                              fontWeight: FontWeight.w400,
+                          GestureDetector(
+                            onTap: () {
+                              if (step == 1) {
+                                gameSystemNotifier
+                                    .installIndexWithoutPiecesPlaced(
+                                        pieceTextList,
+                                        selfPawn[i],
+                                        false,
+                                        initialRivalAndSelfList);
+                                selfPawnColor = const Color(0xFFFFFFFF);
+                                selectedIndex = i;
+                                isRivalPiecePlaced = false;
+                                gameSystemNotifier.next2Step();
+                              }
+                              if (step == 3) {
+                                selfPawnColor = Colors.transparent;
+                                gameSystemNotifier.resetInstallLocationList();
+                                gameSystemNotifier.updateIsHighLight();
+                                gameSystemNotifier.resetIndex();
+                                gameSystemNotifier.resetStep();
+                              }
+                            },
+                            child: Container(
+                              padding: const EdgeInsets.all(4),
+                              color: i == selectedIndex
+                                  ? selfPawnColor
+                                  : Colors.transparent,
+                              child: Text(
+                                selfPawn[i],
+                                style: const TextStyle(
+                                  fontSize: 25,
+                                  color: AppColor.black,
+                                  fontWeight: FontWeight.w400,
+                                ),
+                              ),
                             ),
                           ),
                         },
@@ -238,17 +303,30 @@ class _GamePageState extends ConsumerState<GamePage> {
         ref.watch(gameSystemProvider.select((value) => value.isRival));
     return GestureDetector(
       onTap: () {
-        if (step == 1) {
+        if (step == 1 && pieceTextList[indexY][indexX] != " ") {
           gameSystemNotifier
               .updateIsRival(initialRivalAndSelfList[indexY][indexX]);
           gameSystemNotifier.updateSelectedPieceIndexXY(indexX, indexY);
           gameSystemNotifier.nextLocation(text, indexX, indexY, pieceTextList,
               initialRivalAndSelfList[indexY][indexX], initialRivalAndSelfList);
+          selectedIndexX = indexX;
+          selectedIndexY = indexY;
           gameSystemNotifier.nextStep();
         }
         if (step == 2) {
           nextLocation(pieceTextList, indexX, indexY, ref,
               initialRivalAndSelfList, isRival);
+          gameSystemNotifier.resetInstallLocationList();
+          gameSystemNotifier.changeTurn();
+          gameSystemNotifier.resetIndex();
+          gameSystemNotifier.updateIsHighLight();
+          selectedIndexX = -1;
+          selectedIndexY = -1;
+          gameSystemNotifier.resetStep();
+        }
+        if (step == 3) {
+          nextLocationOfPiecePlaced(isRivalPiecePlaced, pieceTextList,
+              initialRivalAndSelfList, indexY, indexX);
           gameSystemNotifier.resetInstallLocationList();
           gameSystemNotifier.changeTurn();
           gameSystemNotifier.resetIndex();
@@ -260,7 +338,13 @@ class _GamePageState extends ConsumerState<GamePage> {
         height: 40,
         width: 40,
         decoration: BoxDecoration(
-          border: Border.all(color: AppColor.black, width: 0.5),
+          border: Border.all(
+              color: indexY == selectedIndexY && indexX == selectedIndexX
+                  ? Colors.redAccent
+                  : AppColor.black,
+              width: indexY == selectedIndexY && indexX == selectedIndexX
+                  ? 2
+                  : 0.5),
           color: gameSystemNotifier.highLight(indexX, indexY, pieceTextList),
         ),
         child: Center(
@@ -287,6 +371,57 @@ class _GamePageState extends ConsumerState<GamePage> {
         ),
       ),
     );
+  }
+
+  void nextLocationOfPiecePlaced(bool isRival, List<List<String>> pieceTextList,
+      List<List<bool>> initialRivalAndSelfList, int indexY, int indexX) {
+    final selfPawn =
+        ref.watch(gameSystemProvider.select((value) => value.selfPawnList));
+    final rivalPawn =
+        ref.watch(gameSystemProvider.select((value) => value.rivalPawnList));
+    final installNextLocationX = ref.watch(
+        gameSystemProvider.select((value) => value.installLocationXList));
+    final installNextLocationY = ref.watch(
+        gameSystemProvider.select((value) => value.installLocationYList));
+    final gameSystemNotifier = ref.read(gameSystemProvider.notifier);
+    for (int i = 0; i < installNextLocationX.length; i++) {
+      if (!isRival && selfPawn[selectedIndex] == "歩") {
+        for (int j = 0; j < 9; j++) {
+          if (pieceTextList[j][indexX] == "歩" &&
+              !initialRivalAndSelfList[j][indexX]) {
+            selfPawnColor = Colors.transparent;
+            return;
+          }
+        }
+      } else if (isRival && rivalPawn[selectedIndex] == "歩") {
+        for (int j = 0; j < 9; j++) {
+          if (pieceTextList[j][indexX] == "歩" &&
+              initialRivalAndSelfList[j][indexX]) {
+            rivalPawnColor = Colors.transparent;
+            return;
+          }
+        }
+      }
+      if (!isRival &&
+          indexX == installNextLocationX[i] &&
+          indexY == installNextLocationY[i]) {
+        pieceTextList[indexY][indexX] = selfPawn[selectedIndex];
+        initialRivalAndSelfList[indexY][indexX] = isRival;
+        gameSystemNotifier.deleteSelfOrRivalPawn(selectedIndex, isRival);
+        selectedIndex = 0;
+      } else if (isRival &&
+          indexX == installNextLocationX[i] &&
+          indexY == installNextLocationY[i]) {
+        pieceTextList[indexY][indexX] = rivalPawn[selectedIndex];
+        initialRivalAndSelfList[indexY][indexX] = isRival;
+        gameSystemNotifier.deleteSelfOrRivalPawn(selectedIndex, isRival);
+        selectedIndex = 0;
+      } else if (!isRival) {
+        selfPawnColor = Colors.transparent;
+      } else if (isRival) {
+        rivalPawnColor = Colors.transparent;
+      }
+    }
   }
 
   List<List<String>> nextLocation(
