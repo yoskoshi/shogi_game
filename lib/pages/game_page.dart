@@ -3,10 +3,14 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shogi_game/constraints/app_color.dart';
 import 'package:shogi_game/constraints/app_text.dart';
 import 'package:shogi_game/constraints/image_path.dart';
+import 'package:shogi_game/pages/top_page.dart';
 import 'package:shogi_game/providers/game_system_notifier.dart';
+import 'package:shogi_game/providers/one_player_game_setting_notifier.dart';
+import 'package:shogi_game/providers/two_player_game_setting_notifier.dart';
 
 class GamePage extends ConsumerStatefulWidget {
-  const GamePage({Key? key}) : super(key: key);
+  final BattleNumber battleNumber;
+  const GamePage({Key? key, required this.battleNumber}) : super(key: key);
 
   @override
   ConsumerState<GamePage> createState() => _GamePageState();
@@ -89,31 +93,38 @@ class _GamePageState extends ConsumerState<GamePage> {
                 child: Row(
                   children: [
                     if (isPlayersTurn)
-                      const Text(
-                        AppText.yourTurn,
-                        style: TextStyle(
+                      Text(
+                        displayFirstTurn(widget.battleNumber),
+                        style: const TextStyle(
                           fontSize: 30,
                           fontWeight: FontWeight.w700,
                           color: AppColor.white,
                         ),
                       ),
                     if (!isPlayersTurn)
-                      const Text(
-                        AppText.cpuTurn,
-                        style: TextStyle(
-                          fontSize: 30,
-                          fontWeight: FontWeight.w700,
-                          color: AppColor.white,
+                      RotationTransition(
+                        turns: const AlwaysStoppedAnimation(180 / 360),
+                        child: Text(
+                          disPlaySecondTurn(widget.battleNumber),
+                          style: const TextStyle(
+                            fontSize: 30,
+                            fontWeight: FontWeight.w700,
+                            color: AppColor.white,
+                          ),
                         ),
                       ),
-                    const Expanded(
-                      child: Text(
-                        AppText.cpu,
-                        textAlign: TextAlign.end,
-                        style: TextStyle(
-                          fontSize: 30,
-                          fontWeight: FontWeight.w700,
-                          color: AppColor.white,
+                    Expanded(child: Container()),
+                    RotationTransition(
+                      turns: const AlwaysStoppedAnimation(180 / 360),
+                      child: Expanded(
+                        child: Text(
+                          frontName(widget.battleNumber),
+                          textAlign: TextAlign.end,
+                          style: const TextStyle(
+                            fontSize: 30,
+                            fontWeight: FontWeight.w700,
+                            color: AppColor.white,
+                          ),
                         ),
                       ),
                     ),
@@ -234,9 +245,9 @@ class _GamePageState extends ConsumerState<GamePage> {
               Row(
                 children: [
                   const SizedBox(width: 25),
-                  const Text(
-                    "吉田",
-                    style: TextStyle(
+                  Text(
+                    backName(widget.battleNumber),
+                    style: const TextStyle(
                       fontSize: 30,
                       fontWeight: FontWeight.w700,
                       color: AppColor.white,
@@ -294,6 +305,50 @@ class _GamePageState extends ConsumerState<GamePage> {
         ],
       )),
     );
+  }
+
+  String frontName(BattleNumber battleNumber) {
+    final twoPlayerSecondName = ref.watch(
+        twoPlayersGameSettingProvider.select((value) => value.secondMoveName));
+    if (battleNumber == BattleNumber.onePlayer) {
+      return AppText.cpu;
+    } else {
+      return twoPlayerSecondName;
+    }
+  }
+
+  String backName(BattleNumber battleNumber) {
+    final onePlayerName =
+        ref.watch(onePlayerGameSettingProvider.select((value) => value.name));
+    final twoPlayersFirstName = ref.watch(
+        twoPlayersGameSettingProvider.select((value) => value.firstMoveName));
+    if (battleNumber == BattleNumber.onePlayer) {
+      return onePlayerName;
+    } else {
+      return twoPlayersFirstName;
+    }
+  }
+
+  String displayFirstTurn(BattleNumber battleNumber) {
+    final onePlayerName =
+        ref.watch(onePlayerGameSettingProvider.select((value) => value.name));
+    final twoPlayersFirstName = ref.watch(
+        twoPlayersGameSettingProvider.select((value) => value.firstMoveName));
+    if (battleNumber == BattleNumber.onePlayer) {
+      return "$onePlayerNameの番です";
+    } else {
+      return "$twoPlayersFirstNameの番です";
+    }
+  }
+
+  String disPlaySecondTurn(BattleNumber battleNumber) {
+    final twoPlayersSecondName = ref.watch(
+        twoPlayersGameSettingProvider.select((value) => value.secondMoveName));
+    if (battleNumber == BattleNumber.onePlayer) {
+      return "${AppText.cpu}の番です";
+    } else {
+      return "$twoPlayersSecondNameの番です";
+    }
   }
 
   Widget _board(String text, WidgetRef ref, int indexX, int indexY) {

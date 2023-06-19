@@ -4,15 +4,30 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shogi_game/constraints/app_color.dart';
 import 'package:shogi_game/models/game_system.dart';
 
+import 'one_player_game_setting_notifier.dart';
+
 final gameSystemProvider =
     StateNotifierProvider<GameSystemNotifier, GameSystem>(((ref) {
-  return GameSystemNotifier();
+  final isFirstMove = ref
+      .watch(onePlayerGameSettingProvider.select((value) => value.isFirstMove));
+  return GameSystemNotifier(isFirstMove: isFirstMove);
 }));
 
 class GameSystemNotifier extends StateNotifier<GameSystem> {
-  GameSystemNotifier() : super(const GameSystem());
+  final bool isFirstMove;
+  GameSystemNotifier({required this.isFirstMove}) : super(const GameSystem()) {
+    decidedInitialTurn();
+  }
   int index = 0;
   bool isHighLight = false;
+
+  void decidedInitialTurn() {
+    if (isFirstMove) {
+      state = state.copyWith(isPlayersTurn: true);
+    } else {
+      state = state.copyWith(isPlayersTurn: false);
+    }
+  }
 
   //駒の動かせる位置を指定
   void nextLocation(

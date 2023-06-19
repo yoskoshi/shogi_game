@@ -31,5 +31,5 @@ class AppText {
   static const String yourTurn = "あなたの番です";
   static const String cpu = "cpu";
   static const String haveTime = "持ち時間";
-  static const String cpuTurn = "CPUの番です";
+  static const String enemyTurn = "相手の番です";
 }
