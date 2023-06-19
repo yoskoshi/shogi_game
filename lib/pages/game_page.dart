@@ -317,7 +317,6 @@ class _GamePageState extends ConsumerState<GamePage> {
           nextLocation(pieceTextList, indexX, indexY, ref,
               initialRivalAndSelfList, isRival);
           gameSystemNotifier.resetInstallLocationList();
-          gameSystemNotifier.changeTurn();
           gameSystemNotifier.resetIndex();
           gameSystemNotifier.updateIsHighLight();
           selectedIndexX = -1;
@@ -328,7 +327,6 @@ class _GamePageState extends ConsumerState<GamePage> {
           nextLocationOfPiecePlaced(isRivalPiecePlaced, pieceTextList,
               initialRivalAndSelfList, indexY, indexX);
           gameSystemNotifier.resetInstallLocationList();
-          gameSystemNotifier.changeTurn();
           gameSystemNotifier.resetIndex();
           gameSystemNotifier.updateIsHighLight();
           gameSystemNotifier.resetStep();
@@ -408,6 +406,7 @@ class _GamePageState extends ConsumerState<GamePage> {
         pieceTextList[indexY][indexX] = selfPawn[selectedIndex];
         initialRivalAndSelfList[indexY][indexX] = isRival;
         gameSystemNotifier.deleteSelfOrRivalPawn(selectedIndex, isRival);
+        gameSystemNotifier.changeTurn();
         selectedIndex = 0;
       } else if (isRival &&
           indexX == installNextLocationX[i] &&
@@ -415,6 +414,7 @@ class _GamePageState extends ConsumerState<GamePage> {
         pieceTextList[indexY][indexX] = rivalPawn[selectedIndex];
         initialRivalAndSelfList[indexY][indexX] = isRival;
         gameSystemNotifier.deleteSelfOrRivalPawn(selectedIndex, isRival);
+        gameSystemNotifier.changeTurn();
         selectedIndex = 0;
       } else if (!isRival) {
         selfPawnColor = Colors.transparent;
@@ -456,6 +456,7 @@ class _GamePageState extends ConsumerState<GamePage> {
                     [selectedPieceIndexX];
             initialRivalAndSelfList[selectedPieceIndexY][selectedPieceIndexX] =
                 false;
+            gameSystemNotifier.changeTurn();
           });
         } else if (isRival &&
             pieceTextList[indexY][indexX] != " " &&
@@ -470,6 +471,7 @@ class _GamePageState extends ConsumerState<GamePage> {
                     [selectedPieceIndexX];
             initialRivalAndSelfList[selectedPieceIndexY][selectedPieceIndexX] =
                 false;
+            gameSystemNotifier.changeTurn();
           });
         } else {
           setState(() {
@@ -481,6 +483,7 @@ class _GamePageState extends ConsumerState<GamePage> {
                     [selectedPieceIndexX];
             initialRivalAndSelfList[selectedPieceIndexY][selectedPieceIndexX] =
                 false;
+            gameSystemNotifier.changeTurn();
           });
         }
       }
