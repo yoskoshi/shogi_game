@@ -27,6 +27,8 @@ mixin _$GameSystem {
   int get rivalPawnListIndex => throw _privateConstructorUsedError;
   int get selfPawnListIndex => throw _privateConstructorUsedError;
   bool get isRival => throw _privateConstructorUsedError;
+  int get currentFirstMoveSeconds => throw _privateConstructorUsedError;
+  int get currentSecondMoveSeconds => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
   $GameSystemCopyWith<GameSystem> get copyWith =>
@@ -50,7 +52,9 @@ abstract class $GameSystemCopyWith<$Res> {
       List<String> rivalPawnList,
       int rivalPawnListIndex,
       int selfPawnListIndex,
-      bool isRival});
+      bool isRival,
+      int currentFirstMoveSeconds,
+      int currentSecondMoveSeconds});
 }
 
 /// @nodoc
@@ -77,6 +81,8 @@ class _$GameSystemCopyWithImpl<$Res, $Val extends GameSystem>
     Object? rivalPawnListIndex = null,
     Object? selfPawnListIndex = null,
     Object? isRival = null,
+    Object? currentFirstMoveSeconds = null,
+    Object? currentSecondMoveSeconds = null,
   }) {
     return _then(_value.copyWith(
       installLocationXList: null == installLocationXList
@@ -123,6 +129,14 @@ class _$GameSystemCopyWithImpl<$Res, $Val extends GameSystem>
           ? _value.isRival
           : isRival // ignore: cast_nullable_to_non_nullable
               as bool,
+      currentFirstMoveSeconds: null == currentFirstMoveSeconds
+          ? _value.currentFirstMoveSeconds
+          : currentFirstMoveSeconds // ignore: cast_nullable_to_non_nullable
+              as int,
+      currentSecondMoveSeconds: null == currentSecondMoveSeconds
+          ? _value.currentSecondMoveSeconds
+          : currentSecondMoveSeconds // ignore: cast_nullable_to_non_nullable
+              as int,
     ) as $Val);
   }
 }
@@ -146,7 +160,9 @@ abstract class _$$_GameSystemCopyWith<$Res>
       List<String> rivalPawnList,
       int rivalPawnListIndex,
       int selfPawnListIndex,
-      bool isRival});
+      bool isRival,
+      int currentFirstMoveSeconds,
+      int currentSecondMoveSeconds});
 }
 
 /// @nodoc
@@ -171,6 +187,8 @@ class __$$_GameSystemCopyWithImpl<$Res>
     Object? rivalPawnListIndex = null,
     Object? selfPawnListIndex = null,
     Object? isRival = null,
+    Object? currentFirstMoveSeconds = null,
+    Object? currentSecondMoveSeconds = null,
   }) {
     return _then(_$_GameSystem(
       installLocationXList: null == installLocationXList
@@ -217,6 +235,14 @@ class __$$_GameSystemCopyWithImpl<$Res>
           ? _value.isRival
           : isRival // ignore: cast_nullable_to_non_nullable
               as bool,
+      currentFirstMoveSeconds: null == currentFirstMoveSeconds
+          ? _value.currentFirstMoveSeconds
+          : currentFirstMoveSeconds // ignore: cast_nullable_to_non_nullable
+              as int,
+      currentSecondMoveSeconds: null == currentSecondMoveSeconds
+          ? _value.currentSecondMoveSeconds
+          : currentSecondMoveSeconds // ignore: cast_nullable_to_non_nullable
+              as int,
     ));
   }
 }
@@ -441,7 +467,9 @@ class _$_GameSystem implements _GameSystem {
       ],
       this.rivalPawnListIndex = 0,
       this.selfPawnListIndex = 0,
-      this.isRival = false})
+      this.isRival = false,
+      this.currentFirstMoveSeconds = 600,
+      this.currentSecondMoveSeconds = 600})
       : _installLocationXList = installLocationXList,
         _installLocationYList = installLocationYList,
         _selfPawnList = selfPawnList,
@@ -506,10 +534,16 @@ class _$_GameSystem implements _GameSystem {
   @override
   @JsonKey()
   final bool isRival;
+  @override
+  @JsonKey()
+  final int currentFirstMoveSeconds;
+  @override
+  @JsonKey()
+  final int currentSecondMoveSeconds;
 
   @override
   String toString() {
-    return 'GameSystem(installLocationXList: $installLocationXList, installLocationYList: $installLocationYList, step: $step, isPlayersTurn: $isPlayersTurn, selectedPieceIndexX: $selectedPieceIndexX, selectedPieceIndexY: $selectedPieceIndexY, selfPawnList: $selfPawnList, rivalPawnList: $rivalPawnList, rivalPawnListIndex: $rivalPawnListIndex, selfPawnListIndex: $selfPawnListIndex, isRival: $isRival)';
+    return 'GameSystem(installLocationXList: $installLocationXList, installLocationYList: $installLocationYList, step: $step, isPlayersTurn: $isPlayersTurn, selectedPieceIndexX: $selectedPieceIndexX, selectedPieceIndexY: $selectedPieceIndexY, selfPawnList: $selfPawnList, rivalPawnList: $rivalPawnList, rivalPawnListIndex: $rivalPawnListIndex, selfPawnListIndex: $selfPawnListIndex, isRival: $isRival, currentFirstMoveSeconds: $currentFirstMoveSeconds, currentSecondMoveSeconds: $currentSecondMoveSeconds)';
   }
 
   @override
@@ -536,7 +570,13 @@ class _$_GameSystem implements _GameSystem {
                 other.rivalPawnListIndex == rivalPawnListIndex) &&
             (identical(other.selfPawnListIndex, selfPawnListIndex) ||
                 other.selfPawnListIndex == selfPawnListIndex) &&
-            (identical(other.isRival, isRival) || other.isRival == isRival));
+            (identical(other.isRival, isRival) || other.isRival == isRival) &&
+            (identical(
+                    other.currentFirstMoveSeconds, currentFirstMoveSeconds) ||
+                other.currentFirstMoveSeconds == currentFirstMoveSeconds) &&
+            (identical(
+                    other.currentSecondMoveSeconds, currentSecondMoveSeconds) ||
+                other.currentSecondMoveSeconds == currentSecondMoveSeconds));
   }
 
   @override
@@ -552,7 +592,9 @@ class _$_GameSystem implements _GameSystem {
       const DeepCollectionEquality().hash(_rivalPawnList),
       rivalPawnListIndex,
       selfPawnListIndex,
-      isRival);
+      isRival,
+      currentFirstMoveSeconds,
+      currentSecondMoveSeconds);
 
   @JsonKey(ignore: true)
   @override
@@ -573,7 +615,9 @@ abstract class _GameSystem implements GameSystem {
       final List<String> rivalPawnList,
       final int rivalPawnListIndex,
       final int selfPawnListIndex,
-      final bool isRival}) = _$_GameSystem;
+      final bool isRival,
+      final int currentFirstMoveSeconds,
+      final int currentSecondMoveSeconds}) = _$_GameSystem;
 
   @override
   List<int> get installLocationXList;
@@ -597,6 +641,10 @@ abstract class _GameSystem implements GameSystem {
   int get selfPawnListIndex;
   @override
   bool get isRival;
+  @override
+  int get currentFirstMoveSeconds;
+  @override
+  int get currentSecondMoveSeconds;
   @override
   @JsonKey(ignore: true)
   _$$_GameSystemCopyWith<_$_GameSystem> get copyWith =>

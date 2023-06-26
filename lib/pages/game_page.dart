@@ -45,6 +45,13 @@ class _GamePageState extends ConsumerState<GamePage> {
   Color selfPawnColor = Colors.transparent;
   Color rivalPawnColor = Colors.transparent;
   int selectedIndexX = -1, selectedIndexY = -1;
+
+  String timerString(int leftSeconds) {
+    final minutes = (leftSeconds / 60).floor().toString().padLeft(2, '0');
+    final seconds = (leftSeconds % 60).floor().toString().padLeft(2, '0');
+    return '$minutes:$seconds';
+  }
+
   @override
   Widget build(BuildContext context) {
     final isPlayersTurn =
@@ -59,6 +66,10 @@ class _GamePageState extends ConsumerState<GamePage> {
         .watch(gameSystemProvider.select((value) => value.selfPawnListIndex));
     final step = ref.watch(gameSystemProvider.select((value) => value.step));
     final gameSystemNotifier = ref.read(gameSystemProvider.notifier);
+    final currentFirstMoveSeconds = ref.watch(
+        gameSystemProvider.select((value) => value.currentFirstMoveSeconds));
+    final currentSecondMoveSeconds = ref.watch(
+        gameSystemProvider.select((value) => value.currentSecondMoveSeconds));
     return WillPopScope(
       onWillPop: () async => false,
       child: Scaffold(
@@ -254,24 +265,51 @@ class _GamePageState extends ConsumerState<GamePage> {
                     ),
                   ),
                   Expanded(child: Container()),
-                  Column(children: const [
-                    Text(
-                      AppText.haveTime,
-                      style: TextStyle(
-                        fontSize: 30,
-                        fontWeight: FontWeight.w700,
-                        color: AppColor.white,
+                  Column(children: [
+                    if (isPlayersTurn) ...{
+                      const Text(
+                        AppText.haveTime,
+                        style: TextStyle(
+                          fontSize: 30,
+                          fontWeight: FontWeight.w700,
+                          color: AppColor.white,
+                        ),
                       ),
-                    ),
-                    SizedBox(height: 5),
-                    Text(
-                      "10:00",
-                      style: TextStyle(
-                        fontSize: 30,
-                        fontWeight: FontWeight.w700,
-                        color: AppColor.white,
+                      const SizedBox(height: 5),
+                      Text(
+                        timerString(currentFirstMoveSeconds),
+                        style: const TextStyle(
+                          fontSize: 30,
+                          fontWeight: FontWeight.w700,
+                          color: AppColor.white,
+                        ),
                       ),
-                    ),
+                    },
+                    if (!isPlayersTurn) ...{
+                      RotationTransition(
+                        turns: const AlwaysStoppedAnimation(180 / 360),
+                        child: Text(
+                          timerString(currentSecondMoveSeconds),
+                          style: const TextStyle(
+                            fontSize: 30,
+                            fontWeight: FontWeight.w700,
+                            color: AppColor.white,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 5),
+                      const RotationTransition(
+                        turns: AlwaysStoppedAnimation(180 / 360),
+                        child: Text(
+                          AppText.haveTime,
+                          style: TextStyle(
+                            fontSize: 30,
+                            fontWeight: FontWeight.w700,
+                            color: AppColor.white,
+                          ),
+                        ),
+                      ),
+                    }
                   ]),
                   const SizedBox(width: 15),
                 ],

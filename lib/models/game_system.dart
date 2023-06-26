@@ -233,5 +233,9 @@ class GameSystem with _$GameSystem {
         int selfPawnListIndex,
     @Default(false)
         bool isRival,
+    @Default(600)
+        int currentFirstMoveSeconds,
+    @Default(600)
+        int currentSecondMoveSeconds,
   }) = _GameSystem;
 }

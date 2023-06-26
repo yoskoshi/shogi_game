@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:ui';
 
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -16,10 +17,12 @@ final gameSystemProvider =
 class GameSystemNotifier extends StateNotifier<GameSystem> {
   final bool isFirstMove;
   GameSystemNotifier({required this.isFirstMove}) : super(const GameSystem()) {
+    timer = countFirstMoveTimer();
     decidedInitialTurn();
   }
   int index = 0;
   bool isHighLight = false;
+  Timer? timer;
 
   void decidedInitialTurn() {
     if (isFirstMove) {
@@ -713,5 +716,29 @@ class GameSystemNotifier extends StateNotifier<GameSystem> {
     state = state.copyWith(
         installLocationXList: installNextLocationX,
         installLocationYList: installNextLocationY);
+  }
+
+  void updateCurrentFirstMoveSeconds() {
+    state = state.copyWith(
+        currentFirstMoveSeconds: state.currentFirstMoveSeconds - 1);
+  }
+
+  void updateCurrentSecondsMoveSeconds() {
+    state = state.copyWith(
+        currentSecondMoveSeconds: state.currentSecondMoveSeconds - 1);
+  }
+
+  Timer countFirstMoveTimer() {
+    return Timer.periodic(const Duration(seconds: 1), (timer) {
+      if (state.isPlayersTurn) {
+        timer.cancel();
+        timer = countFirstMoveTimer();
+        updateCurrentFirstMoveSeconds();
+      } else {
+        timer.cancel();
+        timer = countFirstMoveTimer();
+        updateCurrentSecondsMoveSeconds();
+      }
+    });
   }
 }
