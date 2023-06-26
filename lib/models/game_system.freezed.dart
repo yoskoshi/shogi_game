@@ -27,6 +27,8 @@ mixin _$GameSystem {
   int get selfPawnListIndex => throw _privateConstructorUsedError;
   bool get isRival => throw _privateConstructorUsedError;
   bool get isPlayersTurn => throw _privateConstructorUsedError;
+  bool get isPlayerCheckTheKing => throw _privateConstructorUsedError;
+  bool get isRivalCheckTheKing => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
   $GameSystemCopyWith<GameSystem> get copyWith =>
@@ -50,7 +52,9 @@ abstract class $GameSystemCopyWith<$Res> {
       int rivalPawnListIndex,
       int selfPawnListIndex,
       bool isRival,
-      bool isPlayersTurn});
+      bool isPlayersTurn,
+      bool isPlayerCheckTheKing,
+      bool isRivalCheckTheKing});
 }
 
 /// @nodoc
@@ -77,6 +81,8 @@ class _$GameSystemCopyWithImpl<$Res, $Val extends GameSystem>
     Object? selfPawnListIndex = null,
     Object? isRival = null,
     Object? isPlayersTurn = null,
+    Object? isPlayerCheckTheKing = null,
+    Object? isRivalCheckTheKing = null,
   }) {
     return _then(_value.copyWith(
       installLocationXList: null == installLocationXList
@@ -123,6 +129,14 @@ class _$GameSystemCopyWithImpl<$Res, $Val extends GameSystem>
           ? _value.isPlayersTurn
           : isPlayersTurn // ignore: cast_nullable_to_non_nullable
               as bool,
+      isPlayerCheckTheKing: null == isPlayerCheckTheKing
+          ? _value.isPlayerCheckTheKing
+          : isPlayerCheckTheKing // ignore: cast_nullable_to_non_nullable
+              as bool,
+      isRivalCheckTheKing: null == isRivalCheckTheKing
+          ? _value.isRivalCheckTheKing
+          : isRivalCheckTheKing // ignore: cast_nullable_to_non_nullable
+              as bool,
     ) as $Val);
   }
 }
@@ -146,7 +160,9 @@ abstract class _$$_GameSystemCopyWith<$Res>
       int rivalPawnListIndex,
       int selfPawnListIndex,
       bool isRival,
-      bool isPlayersTurn});
+      bool isPlayersTurn,
+      bool isPlayerCheckTheKing,
+      bool isRivalCheckTheKing});
 }
 
 /// @nodoc
@@ -171,6 +187,8 @@ class __$$_GameSystemCopyWithImpl<$Res>
     Object? selfPawnListIndex = null,
     Object? isRival = null,
     Object? isPlayersTurn = null,
+    Object? isPlayerCheckTheKing = null,
+    Object? isRivalCheckTheKing = null,
   }) {
     return _then(_$_GameSystem(
       installLocationXList: null == installLocationXList
@@ -216,6 +234,14 @@ class __$$_GameSystemCopyWithImpl<$Res>
       isPlayersTurn: null == isPlayersTurn
           ? _value.isPlayersTurn
           : isPlayersTurn // ignore: cast_nullable_to_non_nullable
+              as bool,
+      isPlayerCheckTheKing: null == isPlayerCheckTheKing
+          ? _value.isPlayerCheckTheKing
+          : isPlayerCheckTheKing // ignore: cast_nullable_to_non_nullable
+              as bool,
+      isRivalCheckTheKing: null == isRivalCheckTheKing
+          ? _value.isRivalCheckTheKing
+          : isRivalCheckTheKing // ignore: cast_nullable_to_non_nullable
               as bool,
     ));
   }
@@ -441,7 +467,9 @@ class _$_GameSystem implements _GameSystem {
       this.rivalPawnListIndex = 0,
       this.selfPawnListIndex = 0,
       this.isRival = false,
-      this.isPlayersTurn = false})
+      this.isPlayersTurn = false,
+      this.isPlayerCheckTheKing = false,
+      this.isRivalCheckTheKing = false})
       : _installLocationXList = installLocationXList,
         _installLocationYList = installLocationYList,
         _selfPawnList = selfPawnList,
@@ -506,10 +534,16 @@ class _$_GameSystem implements _GameSystem {
   @override
   @JsonKey()
   final bool isPlayersTurn;
+  @override
+  @JsonKey()
+  final bool isPlayerCheckTheKing;
+  @override
+  @JsonKey()
+  final bool isRivalCheckTheKing;
 
   @override
   String toString() {
-    return 'GameSystem(installLocationXList: $installLocationXList, installLocationYList: $installLocationYList, step: $step, selectedPieceIndexX: $selectedPieceIndexX, selectedPieceIndexY: $selectedPieceIndexY, selfPawnList: $selfPawnList, rivalPawnList: $rivalPawnList, rivalPawnListIndex: $rivalPawnListIndex, selfPawnListIndex: $selfPawnListIndex, isRival: $isRival, isPlayersTurn: $isPlayersTurn)';
+    return 'GameSystem(installLocationXList: $installLocationXList, installLocationYList: $installLocationYList, step: $step, selectedPieceIndexX: $selectedPieceIndexX, selectedPieceIndexY: $selectedPieceIndexY, selfPawnList: $selfPawnList, rivalPawnList: $rivalPawnList, rivalPawnListIndex: $rivalPawnListIndex, selfPawnListIndex: $selfPawnListIndex, isRival: $isRival, isPlayersTurn: $isPlayersTurn, isPlayerCheckTheKing: $isPlayerCheckTheKing, isRivalCheckTheKing: $isRivalCheckTheKing)';
   }
 
   @override
@@ -536,7 +570,11 @@ class _$_GameSystem implements _GameSystem {
                 other.selfPawnListIndex == selfPawnListIndex) &&
             (identical(other.isRival, isRival) || other.isRival == isRival) &&
             (identical(other.isPlayersTurn, isPlayersTurn) ||
-                other.isPlayersTurn == isPlayersTurn));
+                other.isPlayersTurn == isPlayersTurn) &&
+            (identical(other.isPlayerCheckTheKing, isPlayerCheckTheKing) ||
+                other.isPlayerCheckTheKing == isPlayerCheckTheKing) &&
+            (identical(other.isRivalCheckTheKing, isRivalCheckTheKing) ||
+                other.isRivalCheckTheKing == isRivalCheckTheKing));
   }
 
   @override
@@ -552,7 +590,9 @@ class _$_GameSystem implements _GameSystem {
       rivalPawnListIndex,
       selfPawnListIndex,
       isRival,
-      isPlayersTurn);
+      isPlayersTurn,
+      isPlayerCheckTheKing,
+      isRivalCheckTheKing);
 
   @JsonKey(ignore: true)
   @override
@@ -573,7 +613,9 @@ abstract class _GameSystem implements GameSystem {
       final int rivalPawnListIndex,
       final int selfPawnListIndex,
       final bool isRival,
-      final bool isPlayersTurn}) = _$_GameSystem;
+      final bool isPlayersTurn,
+      final bool isPlayerCheckTheKing,
+      final bool isRivalCheckTheKing}) = _$_GameSystem;
 
   @override
   List<int> get installLocationXList;
@@ -597,6 +639,10 @@ abstract class _GameSystem implements GameSystem {
   bool get isRival;
   @override
   bool get isPlayersTurn;
+  @override
+  bool get isPlayerCheckTheKing;
+  @override
+  bool get isRivalCheckTheKing;
   @override
   @JsonKey(ignore: true)
   _$$_GameSystemCopyWith<_$_GameSystem> get copyWith =>

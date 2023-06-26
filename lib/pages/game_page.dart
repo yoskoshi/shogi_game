@@ -66,6 +66,10 @@ class _GamePageState extends ConsumerState<GamePage> {
         .watch(gameSystemProvider.select((value) => value.selfPawnListIndex));
     final step = ref.watch(gameSystemProvider.select((value) => value.step));
     final gameSystemNotifier = ref.read(gameSystemProvider.notifier);
+    final isPlayerCheckTheKing = ref.watch(
+        gameSystemProvider.select((value) => value.isPlayerCheckTheKing));
+    final isRivalCheckTheKing = ref
+        .watch(gameSystemProvider.select((value) => value.isRivalCheckTheKing));
     return WillPopScope(
       onWillPop: () async => false,
       child: Scaffold(
@@ -248,7 +252,7 @@ class _GamePageState extends ConsumerState<GamePage> {
                   ),
                 ),
               },
-              const SizedBox(height: 100),
+              const SizedBox(height: 145),
               Row(
                 children: [
                   const SizedBox(width: 25),
@@ -289,8 +293,32 @@ class _GamePageState extends ConsumerState<GamePage> {
               ],
             ),
           ),
+          Column(
+            children: [
+              const SizedBox(height: 100),
+              if (isRivalCheckTheKing) ...{
+                checkTheKingImage(),
+              },
+              Expanded(child: Container()),
+              if (isPlayerCheckTheKing) ...{
+                checkTheKingImage(),
+              },
+              const SizedBox(height: 60),
+            ],
+          )
         ],
       )),
+    );
+  }
+
+  Widget checkTheKingImage() {
+    return Align(
+      alignment: Alignment.center,
+      child: SizedBox(
+        height: 100,
+        width: MediaQuery.of(context).size.width - 100,
+        child: Image.asset(ImagePath.outeImage),
+      ),
     );
   }
 
@@ -364,6 +392,10 @@ class _GamePageState extends ConsumerState<GamePage> {
         if (step == 2) {
           nextLocation(pieceTextList, indexX, indexY, ref,
               initialRivalAndSelfList, isRival);
+          gameSystemNotifier.judgePlayerCheckTheKing(
+              pieceTextList, initialRivalAndSelfList);
+          gameSystemNotifier.judgeRivalCheckTheKing(
+              pieceTextList, initialRivalAndSelfList);
           gameSystemNotifier.resetInstallLocationList();
           gameSystemNotifier.resetIndex();
           gameSystemNotifier.updateIsHighLight();

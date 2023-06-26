@@ -3,4 +3,5 @@ class ImagePath {
   static const String backgroundImagePath = "${baseUrl}background_image.jpg";
   static const String tatamiImagePath = "${baseUrl}tatami.jpeg";
   static const String shogiTableImagePath = "${baseUrl}shogi_table.jpg";
+  static const String outeImage = "${baseUrl}oute.jpeg";
 }

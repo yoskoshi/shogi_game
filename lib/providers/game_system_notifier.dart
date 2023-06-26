@@ -54,6 +54,60 @@ class GameSystemNotifier extends StateNotifier<GameSystem> {
     }
   }
 
+  void judgePlayerCheckTheKing(List<List<String>> pieceTextList,
+      List<List<bool>> initialRivalAndSelfList) {
+    for (int i = 0; i < 9; i++) {
+      for (int j = 0; j < 9; j++) {
+        if (!initialRivalAndSelfList[i][j] && pieceTextList[i][j] != " ") {
+          nextLocation(pieceTextList[i][j], j, i, pieceTextList, false,
+              initialRivalAndSelfList);
+          for (int k = 0; k < state.installLocationXList.length; k++) {
+            if (state.installLocationXList[k] == -1) {
+              break;
+            } else {
+              if (pieceTextList[state.installLocationYList[k]]
+                      [state.installLocationXList[k]] ==
+                  "玉") {
+                state = state.copyWith(isPlayerCheckTheKing: true);
+                resetInstallLocationList();
+                return;
+              }
+            }
+          }
+        }
+        resetInstallLocationList();
+      }
+    }
+    state = state.copyWith(isPlayerCheckTheKing: false);
+  }
+
+  void judgeRivalCheckTheKing(List<List<String>> pieceTextList,
+      List<List<bool>> initialRivalAndSelfList) {
+    for (int i = 0; i < 9; i++) {
+      for (int j = 0; j < 9; j++) {
+        if (initialRivalAndSelfList[i][j] && pieceTextList[i][j] != " ") {
+          nextLocation(pieceTextList[i][j], j, i, pieceTextList, true,
+              initialRivalAndSelfList);
+          for (int k = 0; k < state.installLocationXList.length; k++) {
+            if (state.installLocationXList[k] == -1) {
+              break;
+            } else {
+              if (pieceTextList[state.installLocationYList[k]]
+                      [state.installLocationXList[k]] ==
+                  "王") {
+                state = state.copyWith(isRivalCheckTheKing: true);
+                resetInstallLocationList();
+                return;
+              }
+            }
+          }
+        }
+        resetInstallLocationList();
+      }
+    }
+    state = state.copyWith(isRivalCheckTheKing: false);
+  }
+
   //
   void nextLocationWithoutKyouAndKakuAndHisya(
       int indexX,
@@ -252,7 +306,8 @@ class GameSystemNotifier extends StateNotifier<GameSystem> {
             pieceTextList[indexY - (i + 1)][indexX] == " ") {
           installNextLocationX[i] = indexX;
           installNextLocationY[i] = indexY - (i + 1);
-        } else if (pieceTextList[indexY - (i + 1)][indexX] != " " &&
+        } else if (indexY - (i + 1) >= 0 &&
+            pieceTextList[indexY - (i + 1)][indexX] != " " &&
             initialRivalAndSelfList[indexY - (i + 1)][indexX]) {
           installNextLocationX[i] = indexX;
           installNextLocationY[i] = indexY - (i + 1);
@@ -450,7 +505,7 @@ class GameSystemNotifier extends StateNotifier<GameSystem> {
                 !isRival &&
                 pieceTextList[indexY + (i + 1)][indexX] != " " &&
                 initialRivalAndSelfList[indexY + (i + 1)][indexX]) ||
-            (indexX + (i + 1) <= 8 &&
+            (indexY + (i + 1) <= 8 &&
                 isRival &&
                 pieceTextList[indexY + (i + 1)][indexX] != " " &&
                 !initialRivalAndSelfList[indexY + (i + 1)][indexX]);
@@ -461,6 +516,8 @@ class GameSystemNotifier extends StateNotifier<GameSystem> {
         } else if (isEnemyPiece) {
           installNextLocationX.add(indexX);
           installNextLocationY.add(indexY + (i + 1));
+          break;
+        } else {
           break;
         }
       }
