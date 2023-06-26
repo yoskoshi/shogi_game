@@ -343,9 +343,15 @@ class _GamePageState extends ConsumerState<GamePage> {
     final step = ref.watch(gameSystemProvider.select((value) => value.step));
     final isRival =
         ref.watch(gameSystemProvider.select((value) => value.isRival));
+    final isPlayersTurn =
+        ref.watch(gameSystemProvider.select((value) => value.isPlayersTurn));
+    bool ableToMovePiece = step == 1 &&
+            pieceTextList[indexY][indexX] != " " &&
+            (isPlayersTurn && !initialRivalAndSelfList[indexY][indexX]) ||
+        (!isPlayersTurn && initialRivalAndSelfList[indexY][indexX]);
     return GestureDetector(
       onTap: () {
-        if (step == 1 && pieceTextList[indexY][indexX] != " ") {
+        if (ableToMovePiece) {
           gameSystemNotifier
               .updateIsRival(initialRivalAndSelfList[indexY][indexX]);
           gameSystemNotifier.updateSelectedPieceIndexXY(indexX, indexY);
