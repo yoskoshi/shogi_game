@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'dart:ui';
 
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -17,12 +16,10 @@ final gameSystemProvider =
 class GameSystemNotifier extends StateNotifier<GameSystem> {
   final bool isFirstMove;
   GameSystemNotifier({required this.isFirstMove}) : super(const GameSystem()) {
-    timer = countFirstMoveTimer();
     decidedInitialTurn();
   }
   int index = 0;
   bool isHighLight = false;
-  Timer? timer;
 
   void decidedInitialTurn() {
     if (isFirstMove) {
@@ -515,16 +512,9 @@ class GameSystemNotifier extends StateNotifier<GameSystem> {
     state = state.copyWith(step: 1);
   }
 
-  void changeTurn() {
-    if (state.isPlayersTurn) {
-      state = state.copyWith(isPlayersTurn: false);
-    } else {
-      state = state.copyWith(isPlayersTurn: true);
-    }
-  }
-
   //動かせる場所を表示する
   Color? highLight(int indexX, int indexY, List<List<String>> pieceTextList) {
+    Color? appColor;
     if (state.step == 2 || state.step == 3) {
       for (int i = 0; i < state.installLocationXList.length; i++) {
         if (state.installLocationXList[i] == -1 && !isHighLight) {
@@ -544,11 +534,12 @@ class GameSystemNotifier extends StateNotifier<GameSystem> {
         if (index >= 1) {
           index--;
         }
-        return AppColor.white;
+        appColor = AppColor.white;
       } else {
-        return null;
+        appColor = null;
       }
     }
+    return appColor;
   }
 
   void resetIndex() {
@@ -629,6 +620,14 @@ class GameSystemNotifier extends StateNotifier<GameSystem> {
     state = state.copyWith(isRival: isRival);
   }
 
+  void changeTurn() {
+    if (state.isPlayersTurn) {
+      state = state.copyWith(isPlayersTurn: false);
+    } else {
+      state = state.copyWith(isPlayersTurn: true);
+    }
+  }
+
   void installIndexWithoutPiecesPlaced(List<List<String>> pieceTextList,
       String text, bool isRival, List<List<bool>> initialRivalAndSelfList) {
     List<int> installNextLocationX = List.generate(81, (index) => -1);
@@ -647,7 +646,7 @@ class GameSystemNotifier extends StateNotifier<GameSystem> {
         }
       }
 
-      if (withoutNihuLowList.length == 0) {
+      if (withoutNihuLowList.isEmpty) {
         installNextLocationX = List.generate(81, (index) => -1);
         installNextLocationY = List.generate(81, (index) => -1);
       } else {
@@ -716,29 +715,5 @@ class GameSystemNotifier extends StateNotifier<GameSystem> {
     state = state.copyWith(
         installLocationXList: installNextLocationX,
         installLocationYList: installNextLocationY);
-  }
-
-  void updateCurrentFirstMoveSeconds() {
-    state = state.copyWith(
-        currentFirstMoveSeconds: state.currentFirstMoveSeconds - 1);
-  }
-
-  void updateCurrentSecondsMoveSeconds() {
-    state = state.copyWith(
-        currentSecondMoveSeconds: state.currentSecondMoveSeconds - 1);
-  }
-
-  Timer countFirstMoveTimer() {
-    return Timer.periodic(const Duration(seconds: 1), (timer) {
-      if (state.isPlayersTurn) {
-        timer.cancel();
-        timer = countFirstMoveTimer();
-        updateCurrentFirstMoveSeconds();
-      } else {
-        timer.cancel();
-        timer = countFirstMoveTimer();
-        updateCurrentSecondsMoveSeconds();
-      }
-    });
   }
 }

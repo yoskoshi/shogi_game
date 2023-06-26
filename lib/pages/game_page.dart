@@ -66,10 +66,6 @@ class _GamePageState extends ConsumerState<GamePage> {
         .watch(gameSystemProvider.select((value) => value.selfPawnListIndex));
     final step = ref.watch(gameSystemProvider.select((value) => value.step));
     final gameSystemNotifier = ref.read(gameSystemProvider.notifier);
-    final currentFirstMoveSeconds = ref.watch(
-        gameSystemProvider.select((value) => value.currentFirstMoveSeconds));
-    final currentSecondMoveSeconds = ref.watch(
-        gameSystemProvider.select((value) => value.currentSecondMoveSeconds));
     return WillPopScope(
       onWillPop: () async => false,
       child: Scaffold(
@@ -265,53 +261,6 @@ class _GamePageState extends ConsumerState<GamePage> {
                     ),
                   ),
                   Expanded(child: Container()),
-                  Column(children: [
-                    if (isPlayersTurn) ...{
-                      const Text(
-                        AppText.haveTime,
-                        style: TextStyle(
-                          fontSize: 30,
-                          fontWeight: FontWeight.w700,
-                          color: AppColor.white,
-                        ),
-                      ),
-                      const SizedBox(height: 5),
-                      Text(
-                        timerString(currentFirstMoveSeconds),
-                        style: const TextStyle(
-                          fontSize: 30,
-                          fontWeight: FontWeight.w700,
-                          color: AppColor.white,
-                        ),
-                      ),
-                    },
-                    if (!isPlayersTurn) ...{
-                      RotationTransition(
-                        turns: const AlwaysStoppedAnimation(180 / 360),
-                        child: Text(
-                          timerString(currentSecondMoveSeconds),
-                          style: const TextStyle(
-                            fontSize: 30,
-                            fontWeight: FontWeight.w700,
-                            color: AppColor.white,
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 5),
-                      const RotationTransition(
-                        turns: AlwaysStoppedAnimation(180 / 360),
-                        child: Text(
-                          AppText.haveTime,
-                          style: TextStyle(
-                            fontSize: 30,
-                            fontWeight: FontWeight.w700,
-                            color: AppColor.white,
-                          ),
-                        ),
-                      ),
-                    }
-                  ]),
-                  const SizedBox(width: 15),
                 ],
               ),
               const SizedBox(height: 30),

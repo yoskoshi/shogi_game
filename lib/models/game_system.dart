@@ -88,7 +88,7 @@ class GameSystem with _$GameSystem {
       -1,
       -1,
     ])
-        List<int> installLocationXList,
+    List<int> installLocationXList,
     @Default([
       -1,
       -1,
@@ -172,15 +172,10 @@ class GameSystem with _$GameSystem {
       -1,
       -1,
     ])
-        List<int> installLocationYList,
-    @Default(1)
-        int step,
-    @Default(true)
-        bool isPlayersTurn,
-    @Default(-1)
-        int selectedPieceIndexX,
-    @Default(-1)
-        int selectedPieceIndexY,
+    List<int> installLocationYList,
+    @Default(1) int step,
+    @Default(-1) int selectedPieceIndexX,
+    @Default(-1) int selectedPieceIndexY,
     @Default([
       " ",
       " ",
@@ -203,7 +198,7 @@ class GameSystem with _$GameSystem {
       " ",
       " ",
     ])
-        List<String> selfPawnList,
+    List<String> selfPawnList,
     @Default([
       " ",
       " ",
@@ -226,16 +221,10 @@ class GameSystem with _$GameSystem {
       " ",
       " ",
     ])
-        List<String> rivalPawnList,
-    @Default(0)
-        int rivalPawnListIndex,
-    @Default(0)
-        int selfPawnListIndex,
-    @Default(false)
-        bool isRival,
-    @Default(600)
-        int currentFirstMoveSeconds,
-    @Default(600)
-        int currentSecondMoveSeconds,
+    List<String> rivalPawnList,
+    @Default(0) int rivalPawnListIndex,
+    @Default(0) int selfPawnListIndex,
+    @Default(false) bool isRival,
+    @Default(false) bool isPlayersTurn,
   }) = _GameSystem;
 }
