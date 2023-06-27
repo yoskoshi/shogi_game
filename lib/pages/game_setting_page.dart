@@ -86,8 +86,9 @@ class _GameSettingPage extends ConsumerState<GameSettingPage> {
                           MaterialPageRoute(
                               builder: (_) => ManyPlayersNameSettingPage()));
                     } else {
-                      Navigator.of(context).pushReplacement(
-                          MaterialPageRoute(builder: (_) => const GamePage()));
+                      Navigator.of(context).pushReplacement(MaterialPageRoute(
+                          builder: (_) =>
+                              GamePage(battleNumber: widget.battleNumber)));
                     }
                   }),
               const SizedBox(height: 102),
