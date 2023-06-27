@@ -32,4 +32,6 @@ class AppText {
   static const String cpu = "cpu";
   static const String haveTime = "持ち時間";
   static const String enemyTurn = "相手の番です";
+  static const String victory = "勝利！！";
+  static const String backToTop = "トップ画面に戻る";
 }
